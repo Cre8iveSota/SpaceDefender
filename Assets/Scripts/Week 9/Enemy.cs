@@ -13,9 +13,10 @@ public class Enemy : MonoBehaviour
     [SerializeField] public int damage = 1;
     private Camera cam;
     private ScreenShake screenShake;
-    [SerializeField] private GameObject bullet;
-    private Vector3 directionBullet;
+    [SerializeField] private GameObject enemyBullet;
+    Bullet bullet;
 
+    private Vector3 directionBullet;
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
@@ -36,15 +37,19 @@ public class Enemy : MonoBehaviour
         {
             Debug.LogWarning("screenShake not found!");
         }
-        // childTransform = transform.Find("Origin Point");
-        // if (childTransform)
-        // {
-        //     originPosition = childTransform.position;
-        InvokeRepeating("ShootBullet", 2f, 3f);
 
+        if (enemyBullet)
+        {
+            bullet = gameObject.GetComponent<Bullet>();
+        }
+        InvokeRepeating("ShootBullet", 0f, 3f);
     }
 
-    void TrackPlayer()
+    void Update()
+    {
+        TrackPlayer();
+    }
+    private void TrackPlayer()
     {
 
         if (player)
@@ -68,12 +73,7 @@ public class Enemy : MonoBehaviour
             this.enabled = false;
         }
     }
-
-    void Update()
-    {
-        TrackPlayer();
-    }
-    private async void OnTriggerEnter2D(Collider2D col)
+    async void OnTriggerEnter2D(Collider2D col)
     {
         if (col.gameObject.CompareTag("Player"))
         {
@@ -84,9 +84,6 @@ public class Enemy : MonoBehaviour
         }
         else if (col.gameObject.CompareTag("PlayerBullet"))
         {
-            // col.gameObject.GetComponent<Bullet>().SelfDestruct();
-            // Debug.Log(("OOps"));
-            // SelfDestruct();
             {
                 Debug.Log("PlayerBullet collision detected!");
                 if (col.gameObject.GetComponent<Bullet>() != null)
@@ -105,17 +102,15 @@ public class Enemy : MonoBehaviour
 
     public void SelfDestruct()
     {
-        if (!gameObject) { return; }
         Destroy(gameObject);
     }
     private void ShootBullet()
     {
-        if (gameObject.GetComponent<Bullet>())
+        if (bullet)
         {
-            // GameObject bulletInstance = Instantiate(bullet, originPosition, Quaternion.identity);
-            GameObject bulletInstance = Instantiate(bullet, transform.position, Quaternion.identity);
+            GameObject bulletInstance = Instantiate(enemyBullet, transform.position, Quaternion.identity);
             bulletInstance.GetComponent<Bullet>().SetDestination(directionBullet);
         }
     }
-
 }
+

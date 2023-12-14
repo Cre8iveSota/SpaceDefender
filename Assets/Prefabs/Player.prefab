@@ -277,7 +277,7 @@ MonoBehaviour:
   originPoint: {fileID: 6162942941787907088}
   bullet: {fileID: 438540242926099476, guid: 7cb87f0cbc4ae4c28a9cde4927169c41, type: 3}
   deathParticles: {fileID: 4964146206271663940, guid: 2de19dce9dae34184beeaf32d6a92e9e, type: 3}
-  healthBarExtention: {fileID: 1873535689640570758, guid: bfdeb01682f6a4e848bdabd6b230921b, type: 3}
+  healthBarExtention: {fileID: 0}
   currentPosition: {x: 0, y: 0, z: 0}
   beforeGameOver:
     m_PersistentCalls:
@@ -343,7 +343,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: -0.019037247, y: 0.11422253}

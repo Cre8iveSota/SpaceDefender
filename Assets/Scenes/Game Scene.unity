@@ -7128,7 +7128,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1873535689640570756, guid: bfdeb01682f6a4e848bdabd6b230921b, type: 3}
       propertyPath: MaskOffset
-      value: 0
+      value: -100
       objectReference: {fileID: 0}
     - target: {fileID: 1873535689640570757, guid: bfdeb01682f6a4e848bdabd6b230921b, type: 3}
       propertyPath: m_RootOrder
