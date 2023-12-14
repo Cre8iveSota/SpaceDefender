@@ -158,7 +158,7 @@ public class PlayerController : MonoBehaviour
     private async void OnTriggerEnter2D(Collider2D col)
     {
         Debug.Log(col);
-        if (col.gameObject.GetComponent<Bullet>())
+        if (col.transform.gameObject.CompareTag("EnemyBullet"))
         {
             col.gameObject.GetComponent<Bullet>().SelfDestruct();
             await UpdateHealth(-3);
