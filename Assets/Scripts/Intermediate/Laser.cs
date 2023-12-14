@@ -25,9 +25,12 @@ public class Laser : MonoBehaviour
             Enemy enemy = hitObject.GetComponent<Enemy>();
             // bullet check
             Bullet bullet = hitObject.GetComponent<Bullet>();
-            if (enemy != null || bullet != null)
+            if (enemy != null)
             {
                 enemy.SelfDestruct();
+            }
+            else if (bullet != null)
+            {
                 bullet.SelfDestruct();
             }
         }
