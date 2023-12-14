@@ -105,6 +105,7 @@ public class Enemy : MonoBehaviour
 
     public void SelfDestruct()
     {
+        if (!gameObject) { return; }
         Destroy(gameObject);
     }
     private void ShootBullet()
