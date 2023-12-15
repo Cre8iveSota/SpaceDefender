@@ -14,7 +14,10 @@ public class Enemy : MonoBehaviour
     private Camera cam;
     private ScreenShake screenShake;
     [SerializeField] private GameObject enemyBullet;
+    [SerializeField] public int enemyScore;
     Bullet bullet;
+    GameObject gameManagerGameObj;
+    GameManager gameManager;
 
     private Vector3 directionBullet;
     void Start()
@@ -42,6 +45,9 @@ public class Enemy : MonoBehaviour
         {
             bullet = gameObject.GetComponent<Bullet>();
         }
+
+        gameManagerGameObj = GameObject.FindGameObjectWithTag("GameManager");
+        gameManager = gameManagerGameObj?.GetComponent<GameManager>();
         InvokeRepeating("ShootBullet", 0f, 3f);
     }
 
@@ -103,6 +109,7 @@ public class Enemy : MonoBehaviour
     public void SelfDestruct()
     {
         Destroy(gameObject);
+        gameManager.UpadateScore(enemyScore);
     }
     private void ShootBullet()
     {

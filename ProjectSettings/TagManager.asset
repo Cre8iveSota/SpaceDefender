@@ -11,6 +11,7 @@ TagManager:
   - Laser
   - EnemyBullet
   - PlayerBullet
+  - GameManager
   layers:
   - Default
   - TransparentFX

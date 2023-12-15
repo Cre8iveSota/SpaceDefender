@@ -36,6 +36,7 @@ public class EnemySpawner : MonoBehaviour
                 , Quaternion.identity);
             // Increases enemy speed by 25% for each additional count
             enemyInstance.GetComponent<Enemy>().speed += waveRepeatCount * 0.25f;
+            enemyInstance.GetComponent<Enemy>().enemyScore = enemyInstance.GetComponent<Enemy>().enemyScore * (waveRepeatCount + 1);
             // Reduce the interval between enemies that appear each time the count increases.
             float changedTimeBetweenSpans = Mathf.Max(0, waveConfig.GetTimeBetweenSpawns() - waveRepeatCount * 0.25f);
 

@@ -276,6 +276,7 @@ MonoBehaviour:
   speed: 0.5
   damage: 3
   enemyBullet: {fileID: 438540242926099476, guid: 145cf9c3a67d74a5d92997192f712d1e, type: 3}
+  enemyScore: 30
 --- !u!61 &6631538252213614280
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -242,6 +242,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 2
   damage: 5
+  enemyBullet: {fileID: 0}
+  enemyScore: 20
 --- !u!61 &6631538252213614280
 BoxCollider2D:
   m_ObjectHideFlags: 0

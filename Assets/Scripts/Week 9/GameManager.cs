@@ -14,11 +14,16 @@ public class GameManager : MonoBehaviour
     private float elapsedTime;
     [SerializeField] private TMP_Text currentTimeText;
     [SerializeField] private TMP_Text finalTimeText;
+    [SerializeField] private TMP_Text scoreText;
+    [SerializeField] private TMP_Text finalScoreText;
+
     private int sceneIndex;
     private Camera cam;
     private ScreenShake screenShake;
     private GameObject player;
     private PlayerController playerController;
+    private int totalamount = 0;
+
 
     // Start is called before the first frame update
     void Start()
@@ -67,6 +72,7 @@ public class GameManager : MonoBehaviour
     {
         isGameOver = false;
         finalTimeText.text = currentTimeText.text;
+        finalScoreText.text = scoreText.text;
         playerController.SelfDestruct();
         StartCoroutine(GameresetIntervel());
     }
@@ -97,5 +103,11 @@ public class GameManager : MonoBehaviour
     {
         Application.Quit();
         Debug.Log("Game quit");
+    }
+
+    public void UpadateScore(int amount)
+    {
+        totalamount += amount;
+        scoreText.text = $"Score: {totalamount:000,000} pt";
     }
 }
