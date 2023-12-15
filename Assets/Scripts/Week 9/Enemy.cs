@@ -73,11 +73,11 @@ public class Enemy : MonoBehaviour
             this.enabled = false;
         }
     }
-    async void OnTriggerEnter2D(Collider2D col)
+    void OnTriggerEnter2D(Collider2D col)
     {
         if (col.gameObject.CompareTag("Player"))
         {
-            await playerController.UpdateHealth(-damage);
+            playerController.UpdateHealth(-damage);
             screenShake.isShaking = true;
             SelfDestruct();
             SoundManager.instance.PlaySE(3);

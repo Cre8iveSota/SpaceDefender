@@ -123,7 +123,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Mouse1) && canLaser)
         {
-            _ = ShootLaserBeamAsync();
+            StartCoroutine(ShootLaserBeamAsync());
         }
     }
 
@@ -133,35 +133,35 @@ public class PlayerController : MonoBehaviour
         bulletInstance.GetComponent<Bullet>().SetDestination(rotationDirection);
     }
 
-    private async Task ShootLaserBeamAsync()
+    private IEnumerator ShootLaserBeamAsync()
     {
         canLaser = false;
-        await laser.Shoot(rotationDirection);
-        await Task.Delay(400);
+        StartCoroutine(laser.Shoot(rotationDirection));
+        yield return new WaitForSeconds(0.4f);
         canLaser = true;
     }
 
 
-    public async Task UpdateHealth(int amount)
+    public void UpdateHealth(int amount)
     {
         currentHealth += amount;
         Debug.Log("Player health: " + currentHealth);
         uIBarScript.UpdateValue(currentHealth, maxHealth);
         if (currentHealth <= 0)
         {
-            beforeGameOver.Invoke();
-            await Task.Delay(600); // Wait 600 msec unitl the update hp animation done. Otherwise, if player gets  big damage, the game over screen is showed before Hralth bar 0
+            // beforeGameOver.Invoke();
+            // await Task.Delay(600); // Wait 600 msec unitl the update hp animation done. Otherwise, if player gets  big damage, the game over screen is showed before Hralth bar 0
             gameOver.Invoke();
         }
     }
 
-    private async void OnTriggerEnter2D(Collider2D col)
+    private void OnTriggerEnter2D(Collider2D col)
     {
         Debug.Log(col);
         if (col.transform.gameObject.CompareTag("EnemyBullet"))
         {
             col.gameObject.GetComponent<Bullet>().SelfDestruct();
-            await UpdateHealth(-3);
+            UpdateHealth(-3);
         }
     }
 }
