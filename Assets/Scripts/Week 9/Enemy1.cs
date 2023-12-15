@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy1 : MonoBehaviour
 {
     [SerializeField] public float speed = 6;
     private Vector3 playerPos;
@@ -43,16 +43,17 @@ public class Enemy : MonoBehaviour
 
         if (enemyBullet)
         {
-            InvokeRepeating("ShootBullet", 0f, 3f);
+            bullet = gameObject.GetComponent<Bullet>();
         }
 
         gameManagerGameObj = GameObject.FindGameObjectWithTag("GameManager");
         gameManager = gameManagerGameObj?.GetComponent<GameManager>();
+        InvokeRepeating("ShootBullet", 0f, 3f);
     }
 
     void Update()
     {
-        TrackPlayer();
+        // TrackPlayer();
     }
     private void TrackPlayer()
     {
@@ -82,9 +83,9 @@ public class Enemy : MonoBehaviour
     {
         if (col.gameObject.CompareTag("Player"))
         {
-            playerController.UpdateHealth(-damage);
+            // playerController.UpdateHealth(-damage);
             screenShake.isShaking = true;
-            SelfDestruct();
+            // SelfDestruct();
             SoundManager.instance.PlaySE(3);
         }
         else if (col.gameObject.CompareTag("PlayerBullet"))
@@ -112,8 +113,11 @@ public class Enemy : MonoBehaviour
     }
     private void ShootBullet()
     {
-        GameObject bulletInstance = Instantiate(enemyBullet, transform.position, Quaternion.identity);
-        bulletInstance.GetComponent<Bullet>().SetDestination(directionBullet);
+        if (bullet)
+        {
+            GameObject bulletInstance = Instantiate(enemyBullet, transform.position, Quaternion.identity);
+            bulletInstance.GetComponent<Bullet>().SetDestination(directionBullet);
+        }
     }
 }
 

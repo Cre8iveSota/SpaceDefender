@@ -157,7 +157,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        Debug.Log(col);
+        // Debug.Log(col);
         if (col.transform.gameObject.CompareTag("EnemyBullet"))
         {
             col.gameObject.GetComponent<Bullet>().SelfDestruct();

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemy: {fileID: 8965539778249579919, guid: 779503f6118e54254a6b308d5ed84206, type: 3}
   spawnPoints: {fileID: 2234719806108842106, guid: 805b6825beba2429da8c99e9e26f8bd8, type: 3}
-  timeBetweenSpawns: 4
-  timeBetweenWaves: 2
-  spawnRandomness: 2
+  timeBetweenSpawns: 1
+  timeBetweenWaves: 1
+  spawnRandomness: 1
   numberOfEnemies: 1

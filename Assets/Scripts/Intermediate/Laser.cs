@@ -25,8 +25,11 @@ public class Laser : MonoBehaviour
             Enemy enemy = hitObject.GetComponent<Enemy>();
             // bullet check
             Bullet bullet = hitObject.GetComponent<Bullet>();
+
+            AstroLerp astroLerp = hitObject.GetComponent<AstroLerp>();
             enemy?.SelfDestruct();
             bullet?.SelfDestruct();
+            astroLerp?.SelfDisappear();
         }
         else
         {

@@ -12,6 +12,7 @@ TagManager:
   - EnemyBullet
   - PlayerBullet
   - GameManager
+  - astro
   layers:
   - Default
   - TransparentFX
@@ -55,9 +56,9 @@ TagManager:
   - name: Tiles
     uniqueID: 3749161973
     locked: 0
-  - name: Player
-    uniqueID: 1460517043
-    locked: 0
   - name: Projectiles
     uniqueID: 1263005839
+    locked: 0
+  - name: Player
+    uniqueID: 1460517043
     locked: 0
