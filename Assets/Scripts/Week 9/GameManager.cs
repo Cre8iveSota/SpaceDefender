@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -66,7 +67,14 @@ public class GameManager : MonoBehaviour
     {
         isGameOver = false;
         finalTimeText.text = currentTimeText.text;
-        Time.timeScale = 0f;
+        playerController.SelfDestruct();
+        StartCoroutine(GameresetIntervel());
+    }
+
+    private IEnumerator GameresetIntervel()
+    {
+        yield return new WaitForSeconds(1f);
+        Time.timeScale = 0;
     }
 
     public void LoadScene()

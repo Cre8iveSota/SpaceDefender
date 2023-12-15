@@ -279,12 +279,12 @@ MonoBehaviour:
   deathParticles: {fileID: 4964146206271663940, guid: 2de19dce9dae34184beeaf32d6a92e9e, type: 3}
   healthBarExtention: {fileID: 0}
   currentPosition: {x: 0, y: 0, z: 0}
-  beforeGameOver:
+  gameOver:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: beforeGameOver
+      - m_Target: {fileID: 6162942941876165182}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: SelfDestruct
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -292,11 +292,8 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 0
+          m_BoolArgument: 1
         m_CallState: 2
-  gameOver:
-    m_PersistentCalls:
-      m_Calls:
       - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
