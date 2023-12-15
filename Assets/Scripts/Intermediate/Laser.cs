@@ -9,7 +9,7 @@ public class Laser : MonoBehaviour
     [SerializeField] private LineRenderer lineRenderer;
 
 
-    public async Task Shoot(Vector3 rotationDirection)
+    public IEnumerator Shoot(Vector3 rotationDirection)
     {
         SoundManager.instance.PlaySE(1);
         Vector2 laserDirection = new Vector2(rotationDirection.x, rotationDirection.y).normalized;
@@ -25,14 +25,8 @@ public class Laser : MonoBehaviour
             Enemy enemy = hitObject.GetComponent<Enemy>();
             // bullet check
             Bullet bullet = hitObject.GetComponent<Bullet>();
-            if (enemy != null)
-            {
-                enemy.SelfDestruct();
-            }
-            else if (bullet != null)
-            {
-                bullet.SelfDestruct();
-            }
+            enemy?.SelfDestruct();
+            bullet?.SelfDestruct();
         }
         else
         {
@@ -41,7 +35,7 @@ public class Laser : MonoBehaviour
         }
         lineRenderer.enabled = true;
         // yield return new WaitForSeconds(0.02f);
-        await Task.Delay(50);
+        yield return new WaitForSeconds(0.02f);
         lineRenderer.enabled = false;
     }
 
