@@ -31,6 +31,9 @@ public class PlayerController : MonoBehaviour
     private bool canLaser = true;
     private float screenHeight;
     private float screenWidth;
+    private bool canBulletShoot = true;
+
+    private bool canLaserShoot = true;
 
     public float ScreenWidth { get => screenWidth; set => screenWidth = value; }
 
@@ -120,10 +123,41 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             ShootBullet();
+            // StartCoroutine(ShootBulletContinuously(0.1f, 10, 0.5f, false));
         }
         else if (Input.GetKeyDown(KeyCode.Mouse1) && canLaser)
         {
             StartCoroutine(ShootLaserBeamAsync());
+            // StartCoroutine(ShootLaserBeamAsyncContinuously(0.5f, 10, 1f, false));
+        }
+    }
+
+    private IEnumerator ShootBulletContinuously(float period, int bulletCount, float interval, bool canGatring)
+    {
+        if (canBulletShoot || canGatring)
+        {
+            canBulletShoot = false;
+            for (int i = 0; i < bulletCount; i++)
+            {
+                ShootBullet();
+                yield return new WaitForSeconds(period);
+            }
+            yield return new WaitForSeconds(interval);
+            canBulletShoot = true;
+        }
+    }
+    private IEnumerator ShootLaserBeamAsyncContinuously(float period, int laseCount, float interval, bool canGatring)
+    {
+        if (canLaserShoot || canGatring)
+        {
+            canLaserShoot = false;
+            for (int i = 0; i < laseCount; i++)
+            {
+                StartCoroutine(ShootLaserBeamAsync());
+                yield return new WaitForSeconds(period);
+            }
+            yield return new WaitForSeconds(interval);
+            canLaserShoot = true;
         }
     }
 
