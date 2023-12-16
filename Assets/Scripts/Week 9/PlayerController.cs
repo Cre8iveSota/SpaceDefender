@@ -41,6 +41,9 @@ public class PlayerController : MonoBehaviour
     private bool canSingleLaserShoot = true;
 
     public float ScreenWidth { get => screenWidth; set => screenWidth = value; }
+    public int Level { get => level; set => level = value; }
+
+    private int level = 1;
 
     #endregion
 
@@ -66,6 +69,7 @@ public class PlayerController : MonoBehaviour
         PhysicalEnhancement(physicalEnhancementNumber);
         currentHealth = maxHealth;
         uIBarScript.UpdateValue(currentHealth, maxHealth);
+        // InvokeRepeating("NaturalHealingAbility", 0f, ((1 + Level) / (Level * 0.25f)) + 2f);
     }
 
 
@@ -187,7 +191,7 @@ public class PlayerController : MonoBehaviour
             canSingleLaserShoot = true;
         }
     }
-    # endregion
+    #endregion
 
     #region ExtraAbility
     private IEnumerator ShootBulletContinuously(float period, int bulletCount, float interval, bool canGatring)
@@ -225,5 +229,11 @@ public class PlayerController : MonoBehaviour
         moveSpeed = moveSpeed * multiplier;
     }
 
+    private void NaturalHealingAbility()
+    {
+        int healAmount = Level;
+        if (currentHealth >= maxHealth) { return; }
+        UpdateHealth(healAmount);
+    }
     #endregion
 }
