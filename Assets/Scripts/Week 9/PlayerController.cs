@@ -34,6 +34,8 @@ public class PlayerController : MonoBehaviour
     private bool canBulletShoot = true;
 
     private bool canLaserShoot = true;
+    private bool canSingleBulletShoot = true;
+    private bool canSingleLaserShoot = true;
 
     public float ScreenWidth { get => screenWidth; set => screenWidth = value; }
 
@@ -122,12 +124,12 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            ShootBullet();
+            StartCoroutine(ShootBullet(0.4f));
             // StartCoroutine(ShootBulletContinuously(0.1f, 10, 0.5f, false));
         }
         else if (Input.GetKeyDown(KeyCode.Mouse1) && canLaser)
         {
-            StartCoroutine(ShootLaserBeamAsync());
+            StartCoroutine(ShootLaserBeamAsync(0.4f));
             // StartCoroutine(ShootLaserBeamAsyncContinuously(0.5f, 10, 1f, false));
         }
     }
@@ -139,7 +141,7 @@ public class PlayerController : MonoBehaviour
             canBulletShoot = false;
             for (int i = 0; i < bulletCount; i++)
             {
-                ShootBullet();
+                StartCoroutine(ShootBullet(0f));
                 yield return new WaitForSeconds(period);
             }
             yield return new WaitForSeconds(interval);
@@ -153,7 +155,7 @@ public class PlayerController : MonoBehaviour
             canLaserShoot = false;
             for (int i = 0; i < laseCount; i++)
             {
-                StartCoroutine(ShootLaserBeamAsync());
+                StartCoroutine(ShootLaserBeamAsync(0f));
                 yield return new WaitForSeconds(period);
             }
             yield return new WaitForSeconds(interval);
@@ -161,18 +163,27 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void ShootBullet()
+    private IEnumerator ShootBullet(float interval)
     {
-        GameObject bulletInstance = Instantiate(bullet, originPoint.position, Quaternion.identity);
-        bulletInstance.GetComponent<Bullet>().SetDestination(rotationDirection);
+        if (canSingleBulletShoot)
+        {
+            canSingleBulletShoot = false;
+            GameObject bulletInstance = Instantiate(bullet, originPoint.position, Quaternion.identity);
+            bulletInstance.GetComponent<Bullet>().SetDestination(rotationDirection);
+            yield return new WaitForSeconds(interval);
+            canSingleBulletShoot = true;
+        }
     }
 
-    private IEnumerator ShootLaserBeamAsync()
+    private IEnumerator ShootLaserBeamAsync(float interval)
     {
-        canLaser = false;
-        StartCoroutine(laser.Shoot(rotationDirection));
-        yield return new WaitForSeconds(0.4f);
-        canLaser = true;
+        if (canSingleLaserShoot)
+        {
+            canSingleLaserShoot = false;
+            StartCoroutine(laser.Shoot(rotationDirection));
+            yield return new WaitForSeconds(interval);
+            canSingleLaserShoot = true;
+        }
     }
 
 
