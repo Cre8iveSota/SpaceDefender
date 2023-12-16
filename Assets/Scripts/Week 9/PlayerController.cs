@@ -9,18 +9,21 @@ using UnityEngine.Events;
 public class PlayerController : MonoBehaviour
 {
     #region member variable
-    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] public float moveSpeed = 5f;
     [SerializeField] private Transform originPoint;
     [SerializeField] private GameObject bullet;
     [SerializeField] private GameObject deathParticles;
     [SerializeField] private GameObject healthBarExtention;
+    [SerializeField]
+    private List<(string, bool, int)> acquiresAbility = new List<(string, bool, int)>();
+
     public int physicalEnhancementNumber = 1;
 
     // private float maxHealth = 3f;
-    private int maxHealth = 10;
+    public int maxHealth = 10;
 
     // private float currentHealth;
-    private int currentHealth;
+    public int currentHealth;
 
     public Vector3 currentPosition;
     private UIBarScript uIBarScript;
@@ -34,21 +37,32 @@ public class PlayerController : MonoBehaviour
     private bool canLaser = true;
     private float screenHeight;
     private float screenWidth;
-    private bool canBulletShoot = true;
+    // private bool canBulletShoot = true;
 
-    private bool canLaserShoot = true;
+    // private bool canLaserShoot = true;
     private bool canSingleBulletShoot = true;
     private bool canSingleLaserShoot = true;
 
     public float ScreenWidth { get => screenWidth; set => screenWidth = value; }
-    public int Level { get => level; set => level = value; }
+    public int NaturalHealingLevel { get => naturalHealingLevel; set => naturalHealingLevel = value; }
 
-    private int level = 1;
+    private int naturalHealingLevel = 1;
+    ExtraAbility extraAbility;
+
+    private int level1 = 1;
+    private int level2 = 2;
+    private int level3 = 3;
+
 
     #endregion
 
     void Start()
     {
+        acquiresAbility.Add(("ShootBulletContinuously", false, level1));
+        acquiresAbility.Add(("ShootLaserBeamAsyncContinuously", false, level2));
+        acquiresAbility.Add(("PhysicalEnhancement", false, level3));
+        acquiresAbility.Add(("NaturalHealingAbility", true, level3));
+
         cam = Camera.main;
         uIBarScript = healthBarExtention.GetComponentInChildren<UIBarScript>();
         uIBarScript.UpdateValue(currentHealth / maxHealth);
@@ -66,12 +80,12 @@ public class PlayerController : MonoBehaviour
         screenHeight = Camera.main.orthographicSize;
         ScreenWidth = screenHeight * Camera.main.aspect;
 
-        PhysicalEnhancement(physicalEnhancementNumber);
+        extraAbility = GetComponent<ExtraAbility>();
+        PhysicalEnhancementManager();
         currentHealth = maxHealth;
         uIBarScript.UpdateValue(currentHealth, maxHealth);
-        // InvokeRepeating("NaturalHealingAbility", 0f, ((1 + Level) / (Level * 0.25f)) + 2f);
+        NaturalHealingAbilityManager();
     }
-
 
     public void SelfDestruct()
     {
@@ -136,13 +150,103 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            StartCoroutine(ShootBullet(0.4f));
-            // StartCoroutine(ShootBulletContinuously(0.1f, 10, 0.5f, false));
+            ShootBulletManager();
         }
         else if (Input.GetKeyDown(KeyCode.Mouse1) && canLaser)
         {
+            ShootLaserManager();
+        }
+    }
+
+    private void ShootBulletManager()
+    {
+        bool enable = acquiresAbility.Find((i) => i.Item1 == "ShootBulletContinuously").Item2;
+        if (enable)
+        {
+            switch (acquiresAbility.Find((i) => i.Item1 == "ShootBulletContinuously").Item3)
+            {
+                case 3:
+                    StartCoroutine(extraAbility.ShootBulletContinuously(0.05f, 30, 0.5f, true));
+                    break;
+                case 2:
+                    StartCoroutine(extraAbility.ShootBulletContinuously(0.1f, 10, 0.5f, true));
+                    break;
+                default:
+                    StartCoroutine(extraAbility.ShootBulletContinuously(0.1f, 10, 0.5f, false));
+                    break;
+            }
+        }
+        else
+        {
+            StartCoroutine(ShootBullet(0.4f));
+        }
+    }
+    private void ShootLaserManager()
+    {
+        bool enable = acquiresAbility.Find((i) => i.Item1 == "ShootLaserBeamAsyncContinuously").Item2;
+        if (enable)
+        {
+            switch (acquiresAbility.Find((i) => i.Item1 == "ShootLaserBeamAsyncContinuously").Item3)
+            {
+                case 3:
+                    StartCoroutine(extraAbility.ShootLaserBeamAsyncContinuously(0.1f, 30, 1f, true));
+                    break;
+                case 2:
+                    StartCoroutine(extraAbility.ShootLaserBeamAsyncContinuously(0.1f, 10, 1f, true));
+                    break;
+                default:
+                    StartCoroutine(extraAbility.ShootLaserBeamAsyncContinuously(0.5f, 10, 1f, false));
+                    break;
+            }
+        }
+        else
+        {
             StartCoroutine(ShootLaserBeamAsync(0.4f));
-            // StartCoroutine(ShootLaserBeamAsyncContinuously(0.5f, 10, 1f, false));
+        }
+    }
+    private void PhysicalEnhancementManager()
+    {
+        bool enable = acquiresAbility.Find((i) => i.Item1 == "PhysicalEnhancement").Item2;
+        if (enable)
+        {
+            switch (acquiresAbility.Find((i) => i.Item1 == "PhysicalEnhancement").Item3)
+            {
+                case 3:
+                    extraAbility?.PhysicalEnhancement(4);
+                    break;
+                case 2:
+                    extraAbility?.PhysicalEnhancement(3);
+                    break;
+                default:
+                    extraAbility?.PhysicalEnhancement(2);
+                    break;
+            }
+        }
+        else
+        {
+            extraAbility?.PhysicalEnhancement(level1);
+        }
+
+    }
+
+    private void NaturalHealingAbilityManager()
+    {
+        bool enable = acquiresAbility.Find((i) => i.Item1 == "NaturalHealingAbility").Item2;
+        if (enable)
+        {
+            extraAbility.CanNaturalHealingAbility = true;
+            switch (acquiresAbility.Find((i) => i.Item1 == "NaturalHealingAbility").Item3)
+            {
+                case 3:
+                    NaturalHealingLevel = 3;
+                    break;
+                case 2:
+                    NaturalHealingLevel = 2;
+                    break;
+                case 1:
+                    NaturalHealingLevel = 1;
+                    break;
+            }
         }
     }
 
@@ -169,7 +273,7 @@ public class PlayerController : MonoBehaviour
         }
     }
     #region Normal Ability
-    private IEnumerator ShootBullet(float interval)
+    public IEnumerator ShootBullet(float interval)
     {
         if (canSingleBulletShoot)
         {
@@ -181,7 +285,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private IEnumerator ShootLaserBeamAsync(float interval)
+    public IEnumerator ShootLaserBeamAsync(float interval)
     {
         if (canSingleLaserShoot)
         {
@@ -190,50 +294,6 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(interval);
             canSingleLaserShoot = true;
         }
-    }
-    #endregion
-
-    #region ExtraAbility
-    private IEnumerator ShootBulletContinuously(float period, int bulletCount, float interval, bool canGatring)
-    {
-        if (canBulletShoot || canGatring)
-        {
-            canBulletShoot = false;
-            for (int i = 0; i < bulletCount; i++)
-            {
-                StartCoroutine(ShootBullet(0f));
-                yield return new WaitForSeconds(period);
-            }
-            yield return new WaitForSeconds(interval);
-            canBulletShoot = true;
-        }
-    }
-    private IEnumerator ShootLaserBeamAsyncContinuously(float period, int laseCount, float interval, bool canGatring)
-    {
-        if (canLaserShoot || canGatring)
-        {
-            canLaserShoot = false;
-            for (int i = 0; i < laseCount; i++)
-            {
-                StartCoroutine(ShootLaserBeamAsync(0f));
-                yield return new WaitForSeconds(period);
-            }
-            yield return new WaitForSeconds(interval);
-            canLaserShoot = true;
-        }
-    }
-
-    private void PhysicalEnhancement(int multiplier)
-    {
-        maxHealth = maxHealth * multiplier;
-        moveSpeed = moveSpeed * multiplier;
-    }
-
-    private void NaturalHealingAbility()
-    {
-        int healAmount = Level;
-        if (currentHealth >= maxHealth) { return; }
-        UpdateHealth(healAmount);
     }
     #endregion
 }
