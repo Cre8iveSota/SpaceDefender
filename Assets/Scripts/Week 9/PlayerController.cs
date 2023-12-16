@@ -8,17 +8,20 @@ using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour
 {
+    #region member variable
+    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private Transform originPoint;
+    [SerializeField] private GameObject bullet;
+    [SerializeField] private GameObject deathParticles;
+    [SerializeField] private GameObject healthBarExtention;
+    public int physicalEnhancementNumber = 1;
+
     // private float maxHealth = 3f;
     private int maxHealth = 10;
 
     // private float currentHealth;
     private int currentHealth;
 
-    [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private Transform originPoint;
-    [SerializeField] private GameObject bullet;
-    [SerializeField] private GameObject deathParticles;
-    [SerializeField] private GameObject healthBarExtention;
     public Vector3 currentPosition;
     private UIBarScript uIBarScript;
     private Camera cam;
@@ -39,9 +42,10 @@ public class PlayerController : MonoBehaviour
 
     public float ScreenWidth { get => screenWidth; set => screenWidth = value; }
 
+    #endregion
+
     void Start()
     {
-        currentHealth = maxHealth;
         cam = Camera.main;
         uIBarScript = healthBarExtention.GetComponentInChildren<UIBarScript>();
         uIBarScript.UpdateValue(currentHealth / maxHealth);
@@ -58,6 +62,10 @@ public class PlayerController : MonoBehaviour
         }
         screenHeight = Camera.main.orthographicSize;
         ScreenWidth = screenHeight * Camera.main.aspect;
+
+        PhysicalEnhancement(physicalEnhancementNumber);
+        currentHealth = maxHealth;
+        uIBarScript.UpdateValue(currentHealth, maxHealth);
     }
 
 
@@ -134,6 +142,54 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void UpdateHealth(int amount)
+    {
+        currentHealth += amount;
+        Debug.Log("Player health: " + currentHealth);
+        uIBarScript.UpdateValue(currentHealth, maxHealth);
+        if (currentHealth <= 0)
+        {
+            // beforeGameOver.Invoke();
+            // await Task.Delay(600); // Wait 600 msec unitl the update hp animation done. Otherwise, if player gets  big damage, the game over screen is showed before Hralth bar 0
+            gameOver.Invoke();
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        // Debug.Log(col);
+        if (col.transform.gameObject.CompareTag("EnemyBullet"))
+        {
+            col.gameObject.GetComponent<Bullet>().SelfDestruct();
+            UpdateHealth(-3);
+        }
+    }
+    #region Normal Ability
+    private IEnumerator ShootBullet(float interval)
+    {
+        if (canSingleBulletShoot)
+        {
+            canSingleBulletShoot = false;
+            GameObject bulletInstance = Instantiate(bullet, originPoint.position, Quaternion.identity);
+            bulletInstance.GetComponent<Bullet>().SetDestination(rotationDirection);
+            yield return new WaitForSeconds(interval);
+            canSingleBulletShoot = true;
+        }
+    }
+
+    private IEnumerator ShootLaserBeamAsync(float interval)
+    {
+        if (canSingleLaserShoot)
+        {
+            canSingleLaserShoot = false;
+            StartCoroutine(laser.Shoot(rotationDirection));
+            yield return new WaitForSeconds(interval);
+            canSingleLaserShoot = true;
+        }
+    }
+    # endregion
+
+    #region ExtraAbility
     private IEnumerator ShootBulletContinuously(float period, int bulletCount, float interval, bool canGatring)
     {
         if (canBulletShoot || canGatring)
@@ -163,50 +219,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private IEnumerator ShootBullet(float interval)
+    private void PhysicalEnhancement(int multiplier)
     {
-        if (canSingleBulletShoot)
-        {
-            canSingleBulletShoot = false;
-            GameObject bulletInstance = Instantiate(bullet, originPoint.position, Quaternion.identity);
-            bulletInstance.GetComponent<Bullet>().SetDestination(rotationDirection);
-            yield return new WaitForSeconds(interval);
-            canSingleBulletShoot = true;
-        }
+        maxHealth = maxHealth * multiplier;
+        moveSpeed = moveSpeed * multiplier;
     }
 
-    private IEnumerator ShootLaserBeamAsync(float interval)
-    {
-        if (canSingleLaserShoot)
-        {
-            canSingleLaserShoot = false;
-            StartCoroutine(laser.Shoot(rotationDirection));
-            yield return new WaitForSeconds(interval);
-            canSingleLaserShoot = true;
-        }
-    }
-
-
-    public void UpdateHealth(int amount)
-    {
-        currentHealth += amount;
-        Debug.Log("Player health: " + currentHealth);
-        uIBarScript.UpdateValue(currentHealth, maxHealth);
-        if (currentHealth <= 0)
-        {
-            // beforeGameOver.Invoke();
-            // await Task.Delay(600); // Wait 600 msec unitl the update hp animation done. Otherwise, if player gets  big damage, the game over screen is showed before Hralth bar 0
-            gameOver.Invoke();
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D col)
-    {
-        // Debug.Log(col);
-        if (col.transform.gameObject.CompareTag("EnemyBullet"))
-        {
-            col.gameObject.GetComponent<Bullet>().SelfDestruct();
-            UpdateHealth(-3);
-        }
-    }
+    #endregion
 }
