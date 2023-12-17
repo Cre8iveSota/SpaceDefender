@@ -99,13 +99,13 @@ public class Boss : MonoBehaviour
             {
                 Debug.Log("targetPosition:" + targetPosition);
                 Debug.Log("transform.position:" + transform.position);
-                Vector2 offset = new Vector2(2f, 2f);
+                Vector2 offset = new Vector2(4f, 4f);
                 if (transform.position != targetPosition)
                 {
                     if (targetPosition.x < 0) { offset.x = -offset.x; }
                     if (targetPosition.y < 0) { offset.y = -offset.y; }
-                    transform.position += new Vector3(targetPosition.x - (transform.position.x + offset.x), targetPosition.y - (transform.position.y + offset.y), 0f).normalized * step;
-                    // transform.position += new Vector3(targetPosition.x - transform.position.x, targetPosition.y - transform.position.y, 0f) * step;
+                    // transform.position += new Vector3(targetPosition.x - (transform.position.x + offset.x), targetPosition.y - (transform.position.y + offset.y), 0f).normalized * step;
+                    transform.position += new Vector3(targetPosition.x - (transform.position.x + offset.x), targetPosition.y - (transform.position.y + offset.y), 0f) * step;
 
                 }
             }
