@@ -18,6 +18,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float shootingBulletRate = 3f;
 
     [SerializeField] private float howFarFromPlayer = 0.2f;
+    [SerializeField] Transform originPoint;
     Bullet bullet;
     GameObject gameManagerGameObj;
     GameManager gameManager;
@@ -59,7 +60,6 @@ public class Enemy : MonoBehaviour
     }
     private void TrackPlayer()
     {
-
         if (player)
         {
             // Gets the player's position
@@ -78,6 +78,10 @@ public class Enemy : MonoBehaviour
             else if (Vector2.Distance(playerPos, transform.position) < howFarFromPlayer)
             {
                 transform.position += (-direction * speed * Time.deltaTime);
+            }
+            if (originPoint)
+            {
+                transform.up = -direction;
             }
         }
         else
@@ -119,8 +123,17 @@ public class Enemy : MonoBehaviour
     }
     private void ShootBullet()
     {
-        GameObject bulletInstance = Instantiate(enemyBullet, transform.position, Quaternion.identity);
-        bulletInstance.GetComponent<Bullet>().SetDestination(directionBullet);
+        if (originPoint)
+        {
+            GameObject bulletInstance = Instantiate(enemyBullet, originPoint.position, Quaternion.identity);
+            bulletInstance.GetComponent<Bullet>().SetDestination(directionBullet);
+
+        }
+        else
+        {
+            GameObject bulletInstance = Instantiate(enemyBullet, transform.position, Quaternion.identity);
+            bulletInstance.GetComponent<Bullet>().SetDestination(directionBullet);
+        }
     }
 }
 

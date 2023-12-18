@@ -786,7 +786,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8965539778249579904
 Transform:
   m_ObjectHideFlags: 0
@@ -977,3 +977,4 @@ MonoBehaviour:
   - {fileID: 8965539778249579919, guid: df46db9964eaa4fdebb5b1e5936129c2, type: 3}
   - {fileID: 8965539778249579919, guid: 807d3ec470742493caf4b932f208eed3, type: 3}
   hormingEnemyInterval: 2
+  isHealing: 1

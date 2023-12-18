@@ -41,9 +41,12 @@ public class Boss : MonoBehaviour
     private bool enabledHorming = false;
     private bool hasLaunchedHorming;
     private bool isDone;
+    private bool isGameEnd = false;
+    EnemySpawner enemySpawner;
 
     void Start()
     {
+
         extraAbility = GetComponent<ExtraAbility>();
         acquiresAbility.Add(("ShootBulletContinuously", true, level1));
         extraAbility.CanNaturalHealingAbility = false;
@@ -69,12 +72,34 @@ public class Boss : MonoBehaviour
             Debug.LogWarning("screenShake not found!");
         }
 
+        if (healthBarExtention != null)
+        {
+            uIBarScript = healthBarExtention.GetComponentInChildren<UIBarScript>();
+            if (uIBarScript != null)
+            {
+                uIBarScript.UpdateValue(currentHealth, maxHealth);
+            }
+            else
+            {
+                Debug.LogError("UIBarScript not found!");
+            }
+        }
+        else
+        {
+            Debug.LogError("healthBarExtention not found!");
+        }
+        enemySpawner = GameObject.FindGameObjectWithTag("EnemyManager")?.GetComponent<EnemySpawner>();
+        if (enemySpawner == null)
+        {
+            Debug.LogError("EnemySpawner not found!");
+        }
+
         gameManagerGameObj = GameObject.FindGameObjectWithTag("GameManager");
         gameManager = gameManagerGameObj?.GetComponent<GameManager>();
         screenHeight = Camera.main.orthographicSize;
         ScreenWidth = screenHeight * Camera.main.aspect;
         currentHealth = maxHealth;
-        uIBarScript = healthBarExtention.GetComponentInChildren<UIBarScript>();
+        uIBarScript = healthBarExtention?.GetComponentInChildren<UIBarScript>();
         uIBarScript.UpdateValue(currentHealth, maxHealth);
     }
 
@@ -212,8 +237,20 @@ public class Boss : MonoBehaviour
         currentHealth += amount;
         Debug.Log("Player health: " + currentHealth);
         uIBarScript.UpdateValue(currentHealth, maxHealth);
-        if (currentHealth <= 0)
+        if (currentHealth <= 0 && !isGameEnd)
         {
+            isGameEnd = true;
+            enemySpawner.waveActive = false;
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+            // ゲームオブジェクトが見つかった場合、それに対する処理を行う
+            foreach (GameObject enemy in enemies)
+            {
+                Enemy enemyComponent = enemy?.GetComponent<Enemy>();
+                if (enemyComponent != null)
+                {
+                    enemyComponent.SelfDestruct();
+                }
+            }
             SelfDestruct();
         }
     }

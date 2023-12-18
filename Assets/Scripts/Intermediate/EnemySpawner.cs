@@ -6,11 +6,20 @@ public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private List<SpawnWaveConfig> listOfConfig = new List<SpawnWaveConfig>();
     [SerializeField] private int startingWave = 0;
-    private bool waveActive = true;
+    public bool waveActive = true;
     private int waveRepeatCount = 0;
+    GameManager gameManager;
+    GameObject gameManagerGameObj;
+    [SerializeField] private GameObject boss;
+    // [SerializeField] private GameObject bossSpawnPoint;
+    bool isBossExist = false;
+    [SerializeField] private GameObject bossHealthUI;
+
     // Start is called before the first frame update
     IEnumerator Start()
     {
+        gameManagerGameObj = GameObject.FindGameObjectWithTag("GameManager");
+        gameManager = gameManagerGameObj?.GetComponent<GameManager>();
         // waveActive = false;
         do { yield return StartCoroutine("SpaewnAllWaves"); waveRepeatCount++; }
         while (waveActive);
@@ -20,8 +29,22 @@ public class EnemySpawner : MonoBehaviour
     {
         for (int i = startingWave; i < listOfConfig.Count; i++)
         {
+            Debug.Log("boss comming? " + gameManager.totalamount);
+            if (gameManager && gameManager.totalamount > 10000 && !isBossExist)
+            {
+                Debug.Log("boss comming? " + gameManager.totalamount);
+                isBossExist = true;
+                waveActive = false;
+                boss.SetActive(true);
+                // Instantiate(bossPrefab, bossSpawnPoint.transform.position, Quaternion.identity);
+                bossHealthUI.SetActive(true);
+                yield return new WaitForSeconds(5f);
+                waveActive = true;
+                waveRepeatCount = 2;
+            }
             SpawnWaveConfig currentWave = listOfConfig[i];
             yield return StartCoroutine(SpawnEnemiesInWave(currentWave));
+            if (!waveActive) break;
         }
     }
 

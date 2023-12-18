@@ -14,8 +14,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject bullet;
     [SerializeField] private GameObject deathParticles;
     [SerializeField] private GameObject healthBarExtention;
-    [SerializeField]
-    private List<(string, bool, int)> acquiresAbility = new List<(string, bool, int)>();
 
     public int physicalEnhancementNumber = 1;
 
@@ -47,20 +45,11 @@ public class PlayerController : MonoBehaviour
     public int naturalHealingLevel = 0;
     ExtraAbility extraAbility;
 
-    private int level1 = 1;
-    private int level2 = 2;
-    private int level3 = 3;
-
 
     #endregion
 
     void Start()
     {
-        acquiresAbility.Add(("ShootBulletContinuously", true, level1));
-        acquiresAbility.Add(("ShootLaserBeamAsyncContinuously", true, level1));
-        acquiresAbility.Add(("PhysicalEnhancement", false, level2));
-        acquiresAbility.Add(("NaturalHealingAbility", true, level3));
-
         cam = Camera.main;
         uIBarScript = healthBarExtention.GetComponentInChildren<UIBarScript>();
         uIBarScript.UpdateValue(currentHealth / maxHealth);
@@ -158,10 +147,10 @@ public class PlayerController : MonoBehaviour
 
     private void ShootBulletManager()
     {
-        bool enable = acquiresAbility.Find((i) => i.Item1 == "ShootBulletContinuously").Item2;
+        bool enable = GameManager.acquiresAbility.Find((i) => i.Item1 == "ShootBulletContinuously").Item2;
         if (enable)
         {
-            switch (acquiresAbility.Find((i) => i.Item1 == "ShootBulletContinuously").Item3)
+            switch (GameManager.acquiresAbility.Find((i) => i.Item1 == "ShootBulletContinuously").Item3)
             {
                 case 3:
                     StartCoroutine(extraAbility.ShootBulletContinuously(0.05f, 10, 0.5f, true));
@@ -181,10 +170,10 @@ public class PlayerController : MonoBehaviour
     }
     private void ShootLaserManager()
     {
-        bool enable = acquiresAbility.Find((i) => i.Item1 == "ShootLaserBeamAsyncContinuously").Item2;
+        bool enable = GameManager.acquiresAbility.Find((i) => i.Item1 == "ShootLaserBeamAsyncContinuously").Item2;
         if (enable)
         {
-            switch (acquiresAbility.Find((i) => i.Item1 == "ShootLaserBeamAsyncContinuously").Item3)
+            switch (GameManager.acquiresAbility.Find((i) => i.Item1 == "ShootLaserBeamAsyncContinuously").Item3)
             {
                 case 3:
                     StartCoroutine(extraAbility.ShootLaserBeamAsyncContinuously(0.1f, 10, 1f, true));
@@ -204,10 +193,10 @@ public class PlayerController : MonoBehaviour
     }
     private void PhysicalEnhancementManager()
     {
-        bool enable = acquiresAbility.Find((i) => i.Item1 == "PhysicalEnhancement").Item2;
+        bool enable = GameManager.acquiresAbility.Find((i) => i.Item1 == "PhysicalEnhancement").Item2;
         if (enable)
         {
-            switch (acquiresAbility.Find((i) => i.Item1 == "PhysicalEnhancement").Item3)
+            switch (GameManager.acquiresAbility.Find((i) => i.Item1 == "PhysicalEnhancement").Item3)
             {
                 case 3:
                     extraAbility?.PhysicalEnhancement(4);
@@ -222,18 +211,18 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            extraAbility?.PhysicalEnhancement(level1);
+            extraAbility?.PhysicalEnhancement(1);
         }
 
     }
 
     private void NaturalHealingAbilityManager()
     {
-        bool enable = acquiresAbility.Find((i) => i.Item1 == "NaturalHealingAbility").Item2;
+        bool enable = GameManager.acquiresAbility.Find((i) => i.Item1 == "NaturalHealingAbility").Item2;
         if (enable)
         {
             extraAbility.CanNaturalHealingAbility = true;
-            switch (acquiresAbility.Find((i) => i.Item1 == "NaturalHealingAbility").Item3)
+            switch (GameManager.acquiresAbility.Find((i) => i.Item1 == "NaturalHealingAbility").Item3)
             {
                 case 3:
                     naturalHealingLevel = 3;
