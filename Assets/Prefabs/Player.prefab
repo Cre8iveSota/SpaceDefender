@@ -281,7 +281,7 @@ MonoBehaviour:
   healthBarExtention: {fileID: 0}
   physicalEnhancementNumber: 1
   maxHealth: 10
-  currentHealth: 0
+  currentHealth: 10
   currentPosition: {x: 0, y: 0, z: 0}
   beforeGameOver:
     m_PersistentCalls:
@@ -337,6 +337,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+  naturalHealingLevel: 0
 --- !u!61 &585887333480332244
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -411,3 +412,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanNaturalHealingAbility: 1
+  extraEnemy: []
+  hormingEnemyInterval: 10

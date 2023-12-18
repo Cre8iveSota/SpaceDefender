@@ -44,9 +44,7 @@ public class PlayerController : MonoBehaviour
     private bool canSingleLaserShoot = true;
 
     public float ScreenWidth { get => screenWidth; set => screenWidth = value; }
-    public int NaturalHealingLevel { get => naturalHealingLevel; set => naturalHealingLevel = value; }
-
-    private int naturalHealingLevel = 1;
+    public int naturalHealingLevel = 0;
     ExtraAbility extraAbility;
 
     private int level1 = 1;
@@ -58,9 +56,9 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        acquiresAbility.Add(("ShootBulletContinuously", false, level1));
-        acquiresAbility.Add(("ShootLaserBeamAsyncContinuously", false, level2));
-        acquiresAbility.Add(("PhysicalEnhancement", false, level3));
+        acquiresAbility.Add(("ShootBulletContinuously", true, level1));
+        acquiresAbility.Add(("ShootLaserBeamAsyncContinuously", true, level1));
+        acquiresAbility.Add(("PhysicalEnhancement", false, level2));
         acquiresAbility.Add(("NaturalHealingAbility", true, level3));
 
         cam = Camera.main;
@@ -166,10 +164,10 @@ public class PlayerController : MonoBehaviour
             switch (acquiresAbility.Find((i) => i.Item1 == "ShootBulletContinuously").Item3)
             {
                 case 3:
-                    StartCoroutine(extraAbility.ShootBulletContinuously(0.05f, 30, 0.5f, true));
+                    StartCoroutine(extraAbility.ShootBulletContinuously(0.05f, 10, 0.5f, true));
                     break;
                 case 2:
-                    StartCoroutine(extraAbility.ShootBulletContinuously(0.1f, 10, 0.5f, true));
+                    StartCoroutine(extraAbility.ShootBulletContinuously(0.05f, 30, 0.5f, false));
                     break;
                 default:
                     StartCoroutine(extraAbility.ShootBulletContinuously(0.1f, 10, 0.5f, false));
@@ -189,10 +187,10 @@ public class PlayerController : MonoBehaviour
             switch (acquiresAbility.Find((i) => i.Item1 == "ShootLaserBeamAsyncContinuously").Item3)
             {
                 case 3:
-                    StartCoroutine(extraAbility.ShootLaserBeamAsyncContinuously(0.1f, 30, 1f, true));
+                    StartCoroutine(extraAbility.ShootLaserBeamAsyncContinuously(0.1f, 10, 1f, true));
                     break;
                 case 2:
-                    StartCoroutine(extraAbility.ShootLaserBeamAsyncContinuously(0.1f, 10, 1f, true));
+                    StartCoroutine(extraAbility.ShootLaserBeamAsyncContinuously(0.08f, 20, 1f, false));
                     break;
                 default:
                     StartCoroutine(extraAbility.ShootLaserBeamAsyncContinuously(0.5f, 10, 1f, false));
@@ -238,13 +236,13 @@ public class PlayerController : MonoBehaviour
             switch (acquiresAbility.Find((i) => i.Item1 == "NaturalHealingAbility").Item3)
             {
                 case 3:
-                    NaturalHealingLevel = 3;
+                    naturalHealingLevel = 3;
                     break;
                 case 2:
-                    NaturalHealingLevel = 2;
+                    naturalHealingLevel = 2;
                     break;
                 case 1:
-                    NaturalHealingLevel = 1;
+                    naturalHealingLevel = 1;
                     break;
             }
         }

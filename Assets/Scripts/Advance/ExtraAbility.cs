@@ -5,20 +5,31 @@ using UnityEngine;
 public class ExtraAbility : MonoBehaviour
 {
     private bool canBulletShoot = true;
+    private bool canSubBulletShoot = true;
+
 
     private bool canLaserShoot = true;
     private PlayerController playerController;
+    private Boss boss;
     public bool CanNaturalHealingAbility = true;
+    [SerializeField] private List<GameObject> extraEnemy;
+    public float hormingEnemyInterval = 1f;
+    float healingInterval;
+
+    public bool isHealing = true;
 
     #region ExtraAbility
 
     private void Start()
     {
         playerController = GetComponent<PlayerController>();
-        if (CanNaturalHealingAbility)
-        {
-            InvokeRepeating("NaturalHealingAbility", 0f, ((1 + playerController.NaturalHealingLevel) / (playerController.NaturalHealingLevel * 0.25f)) + 2f);
-        }
+        boss = GetComponent<Boss>();
+        // if (CanNaturalHealingAbility && playerController)
+        // {
+
+        //     Debug.Log("kitemasu interval" + healingInterval);
+        //     InvokeRepeating("NaturalHealingAbility", 0f, healingInterval);
+        // }
     }
 
     public IEnumerator ShootBulletContinuously(float period, int bulletCount, float interval, bool canGatring)
@@ -28,11 +39,33 @@ public class ExtraAbility : MonoBehaviour
             canBulletShoot = false;
             for (int i = 0; i < bulletCount; i++)
             {
-                StartCoroutine(playerController.ShootBullet(0f));
+                if (playerController)
+                {
+                    StartCoroutine(playerController.ShootBullet(0f));
+                }
+                if (boss)
+                {
+                    boss.ShootBullet();
+                }
+
                 yield return new WaitForSeconds(period);
             }
             yield return new WaitForSeconds(interval);
+
             canBulletShoot = true;
+        }
+    }
+    public IEnumerator SubShootBulletContinuously()
+    {
+        if (boss?.currentHealth < 0.4f * boss?.maxHealth && canSubBulletShoot)
+        {
+            canSubBulletShoot = false;
+            for (int i = 0; i < 10; i++)
+            {
+                boss.ShootBulletSub();
+                yield return new WaitForSeconds(1f);
+            }
+            canSubBulletShoot = true;
         }
     }
     public IEnumerator ShootLaserBeamAsyncContinuously(float period, int laseCount, float interval, bool canGatring)
@@ -59,11 +92,49 @@ public class ExtraAbility : MonoBehaviour
         }
     }
 
-    public void NaturalHealingAbility()
+    public IEnumerator NaturalHealingAbility()
     {
-        int healAmount = playerController.NaturalHealingLevel;
-        if (playerController.currentHealth >= playerController.maxHealth) { return; }
-        playerController.UpdateHealth(healAmount);
+        if (playerController)
+        {
+            int healAmount = playerController.naturalHealingLevel;
+            Debug.Log("kaihukusuruyo" + healAmount);
+            Debug.Log("playerController.currentHealth" + playerController.currentHealth);
+            Debug.Log("playerController.maxHealth" + playerController.currentHealth);
+
+
+            if (playerController.currentHealth >= playerController.maxHealth) { Debug.Log("shippai"); yield return null; }
+            playerController.UpdateHealth(healAmount);
+        }
+        yield return new WaitForSeconds(healingInterval);
+        isHealing = true;
+    }
+
+    public void HormingEnemy()
+    {
+        if (boss)
+        {
+            StartCoroutine(SpawnEnemiesWithInterval());
+        }
+    }
+
+    private IEnumerator SpawnEnemiesWithInterval()
+    {
+        foreach (GameObject enemyPrefab in extraEnemy)
+        {
+            Instantiate(enemyPrefab, boss.originPoint[0].position, Quaternion.identity);
+            Debug.Log("敵が生成されました: " + enemyPrefab.name);
+            yield return new WaitForSeconds(hormingEnemyInterval);
+        }
     }
     #endregion
+
+    private void Update()
+    {
+        if (CanNaturalHealingAbility && playerController && isHealing)
+        {
+            isHealing = false;
+            healingInterval = ((1 + playerController.naturalHealingLevel) / (playerController.naturalHealingLevel * 0.25f)) + 2f;
+            StartCoroutine(NaturalHealingAbility());
+        }
+    }
 }

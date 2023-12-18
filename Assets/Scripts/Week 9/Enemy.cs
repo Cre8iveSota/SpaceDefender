@@ -15,6 +15,9 @@ public class Enemy : MonoBehaviour
     private ScreenShake screenShake;
     [SerializeField] private GameObject enemyBullet;
     [SerializeField] public int enemyScore;
+    [SerializeField] private float shootingBulletRate = 3f;
+
+    [SerializeField] private float howFarFromPlayer = 0.2f;
     Bullet bullet;
     GameObject gameManagerGameObj;
     GameManager gameManager;
@@ -43,7 +46,7 @@ public class Enemy : MonoBehaviour
 
         if (enemyBullet)
         {
-            InvokeRepeating("ShootBullet", 0f, 3f);
+            InvokeRepeating("ShootBullet", 0f, shootingBulletRate);
         }
 
         gameManagerGameObj = GameObject.FindGameObjectWithTag("GameManager");
@@ -67,10 +70,14 @@ public class Enemy : MonoBehaviour
             Vector3 direction = directionBullet.normalized;
             // Rotates the enemy so that the "up arrow" faces the direction of the player
             transform.up = direction;
-            if (Vector2.Distance(playerPos, transform.position) > 0.2f)
+            if (Vector2.Distance(playerPos, transform.position) > howFarFromPlayer)
             {
                 // Moves the enemy ship towards the player
                 transform.position += (direction * speed * Time.deltaTime);
+            }
+            else if (Vector2.Distance(playerPos, transform.position) < howFarFromPlayer)
+            {
+                transform.position += (-direction * speed * Time.deltaTime);
             }
         }
         else

@@ -7,6 +7,7 @@ using UnityEngine;
 public class Boss : MonoBehaviour
 {
     [SerializeField] public float speed = 6;
+    public List<Transform> originPoint = new List<Transform>();
     private Vector3 playerPos;
     private GameObject player;
     private PlayerController playerController;
@@ -15,18 +16,40 @@ public class Boss : MonoBehaviour
     private ScreenShake screenShake;
     [SerializeField] private GameObject enemyBullet;
     [SerializeField] public int enemyScore;
+    [SerializeField] private GameObject healthBarExtention;
+    private List<(string, bool, int)> acquiresAbility = new List<(string, bool, int)>();
+    private int launchedHormingNumber = 0;
+
+
     Bullet bullet;
     GameObject gameManagerGameObj;
     GameManager gameManager;
     private float screenHeight;
 
     public float ScreenWidth { get; private set; }
+    public int currentHealth;
 
+    public int maxHealth = 100;
     private Vector3 directionBullet;
-    private Vector3 pastposition;
+    private UIBarScript uIBarScript;
+    ExtraAbility extraAbility;
+
+
+    private int level1 = 1;
+    private int level2 = 2;
+    private int level3 = 3;
+    private bool enabledHorming = false;
+    private bool hasLaunchedHorming;
+    private bool isDone;
 
     void Start()
     {
+        extraAbility = GetComponent<ExtraAbility>();
+        acquiresAbility.Add(("ShootBulletContinuously", true, level1));
+        extraAbility.CanNaturalHealingAbility = false;
+        acquiresAbility.Add(("HormingEnemy", true, level1));
+        // acquiresAbility.Add(("PhysicalEnhancement", false, level3));
+        // acquiresAbility.Add(("NaturalHealingAbility", true, level3));
         player = GameObject.FindGameObjectWithTag("Player");
         if (player)
         {
@@ -46,20 +69,25 @@ public class Boss : MonoBehaviour
             Debug.LogWarning("screenShake not found!");
         }
 
-        if (enemyBullet)
-        {
-            InvokeRepeating("ShootBullet", 0f, 3f);
-        }
-
         gameManagerGameObj = GameObject.FindGameObjectWithTag("GameManager");
         gameManager = gameManagerGameObj?.GetComponent<GameManager>();
         screenHeight = Camera.main.orthographicSize;
         ScreenWidth = screenHeight * Camera.main.aspect;
+        currentHealth = maxHealth;
+        uIBarScript = healthBarExtention.GetComponentInChildren<UIBarScript>();
+        uIBarScript.UpdateValue(currentHealth, maxHealth);
     }
 
     void Update()
     {
         EscapePlayer();
+        ShootBulletManager();
+        if (enabledHorming && !hasLaunchedHorming)
+        {
+            hasLaunchedHorming = true;
+            HormingEnemyManager();
+            launchedHormingNumber++;
+        }
     }
     private void EscapePlayer()
     {
@@ -104,15 +132,19 @@ public class Boss : MonoBehaviour
                 {
                     if (targetPosition.x < 0) { offset.x = -offset.x; }
                     if (targetPosition.y < 0) { offset.y = -offset.y; }
-                    // transform.position += new Vector3(targetPosition.x - (transform.position.x + offset.x), targetPosition.y - (transform.position.y + offset.y), 0f).normalized * step;
-                    transform.position += new Vector3(targetPosition.x - (transform.position.x + offset.x), targetPosition.y - (transform.position.y + offset.y), 0f) * step;
+                    if (currentHealth < 0.6 * maxHealth)
+                    {
+                        transform.position += new Vector3(targetPosition.x - (transform.position.x + offset.x), targetPosition.y - (transform.position.y + offset.y), 0f) * step;
+                        Debug.Log("spped up");
+                    }
+                    else
+                    {
+                        transform.position += new Vector3(targetPosition.x - (transform.position.x + offset.x), targetPosition.y - (transform.position.y + offset.y), 0f).normalized * step;
+                        Debug.Log("spped normal");
+                    }
 
                 }
             }
-            pastposition = transform.position;
-            Debug.Log($"Player Position: {playerPos}");
-            Debug.Log($"Farthest Corner: {farthestCorner}");
-            Debug.Log($"Target Position: {targetPosition}");
         }
         else
         {
@@ -132,6 +164,8 @@ public class Boss : MonoBehaviour
         if (col.gameObject.CompareTag("Player"))
         {
             playerController.UpdateHealth(-damage);
+            UpdateHealth(-1);
+
             screenShake.isShaking = true;
             // SelfDestruct();
             // SoundManager.instance.PlaySE(3);
@@ -143,6 +177,7 @@ public class Boss : MonoBehaviour
                 if (col.gameObject.GetComponent<Bullet>() != null)
                 {
                     col.gameObject.GetComponent<Bullet>().SelfDestruct();
+                    UpdateHealth(-1);
                     Debug.Log("Bullet destroyed!");
                 }
                 else
@@ -159,10 +194,89 @@ public class Boss : MonoBehaviour
         Destroy(gameObject);
         gameManager.UpadateScore(enemyScore);
     }
-    private void ShootBullet()
+    public void ShootBullet()
     {
-        GameObject bulletInstance = Instantiate(enemyBullet, transform.position, Quaternion.identity);
+        GameObject bulletInstance = Instantiate(enemyBullet, originPoint[0].position, Quaternion.identity);
         bulletInstance.GetComponent<Bullet>().SetDestination(directionBullet);
+    }
+    public void ShootBulletSub()
+    {
+        GameObject bulletInstanceSub1 = Instantiate(enemyBullet, originPoint[1].position, Quaternion.identity);
+        bulletInstanceSub1.GetComponent<Bullet>().SetDestination(directionBullet);
+        GameObject bulletInstanceSub2 = Instantiate(enemyBullet, originPoint[2].position, Quaternion.identity);
+        bulletInstanceSub2.GetComponent<Bullet>().SetDestination(directionBullet);
+    }
+
+    public void UpdateHealth(int amount)
+    {
+        currentHealth += amount;
+        Debug.Log("Player health: " + currentHealth);
+        uIBarScript.UpdateValue(currentHealth, maxHealth);
+        if (currentHealth <= 0)
+        {
+            SelfDestruct();
+        }
+    }
+
+    private void ShootBulletManager()
+    {
+        if (0.6f * maxHealth < currentHealth && currentHealth < 0.8f * maxHealth)
+        {
+            int indexToReplace = 0;  // Index of the first item
+            // Replace the third argument of the first item with level2
+            acquiresAbility[indexToReplace] = (acquiresAbility[indexToReplace].Item1, acquiresAbility[indexToReplace].Item2, level2);
+            Debug.Log("replaced to level2 of shoot: " + acquiresAbility[0]);
+        }
+        else if (0.4f * maxHealth < currentHealth && currentHealth < 0.6f * maxHealth)
+        {
+            int indexToReplace = 0;  // Index of the first item
+            // Replace the third argument of the first item with level2
+            acquiresAbility[indexToReplace] = (acquiresAbility[indexToReplace].Item1, acquiresAbility[indexToReplace].Item2, level3);
+            Debug.Log("replaced to level3 of shoot:" + acquiresAbility[0]);
+        }
+        else if (0.2f * maxHealth < currentHealth && currentHealth < 0.4 * maxHealth)
+        {
+            StartCoroutine(extraAbility.SubShootBulletContinuously());
+            enabledHorming = true;
+            Debug.Log("first horming");
+            isDone = true;
+        }
+        else if (currentHealth < 0.2f * maxHealth && isDone)
+        {
+            StartCoroutine(extraAbility.SubShootBulletContinuously());
+            enabledHorming = true;
+            if (launchedHormingNumber < 2) { hasLaunchedHorming = false; }
+            Debug.Log("second horming");
+            extraAbility.hormingEnemyInterval = 0f;
+        }
+        // bool enable = acquiresAbility.Find((i) => i.Item1 == "ShootBulletContinuously").Item2;
+        // if (enable)
+        // {
+        Debug.Log($"Switch Value: {acquiresAbility.Find((i) => i.Item1 == "ShootBulletContinuously").Item3}");
+
+        switch (acquiresAbility.Find((i) => i.Item1 == "ShootBulletContinuously").Item3)
+        {
+            case 3:
+                StartCoroutine(extraAbility.ShootBulletContinuously(0.1f, 30, 1f, false));
+                break;
+            case 2:
+                StartCoroutine(extraAbility.ShootBulletContinuously(0f, 1, 0.2f, false));
+                break;
+            default:
+                StartCoroutine(extraAbility.ShootBulletContinuously(0f, 1, 0.5f, false));
+                break;
+        }
+        // }
+    }
+
+    private void HormingEnemyManager()
+    {
+        enabledHorming = false;
+        bool enable = acquiresAbility.Find((i) => i.Item1 == "HormingEnemy").Item2;
+        if (enable)
+        {
+            extraAbility.HormingEnemy();
+        }
     }
 }
 

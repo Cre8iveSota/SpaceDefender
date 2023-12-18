@@ -38,4 +38,20 @@ public class Bullet : MonoBehaviour
     {
         transform.position += destination.normalized * speed * Time.deltaTime;
     }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+
+        Debug.Log("Comming " + other.gameObject);
+
+        if
+        (
+            (other.gameObject.CompareTag("PlayerBullet") && this.gameObject.CompareTag("EnemyBullet"))
+                    || (other.gameObject.CompareTag("EnemyBullet") && this.gameObject.CompareTag("PlayerBullet"))
+        )
+        {
+            SelfDestruct();
+            Debug.Log("Came");
+        }
+    }
 }
