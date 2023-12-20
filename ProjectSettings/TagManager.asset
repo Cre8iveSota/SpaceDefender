@@ -13,6 +13,7 @@ TagManager:
   - PlayerBullet
   - GameManager
   - astro
+  - Text
   layers:
   - Default
   - TransparentFX

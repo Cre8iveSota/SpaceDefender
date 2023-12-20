@@ -610,7 +610,7 @@ GameObject:
   - component: {fileID: 288746056}
   m_Layer: 5
   m_Name: Text
-  m_TagString: Untagged
+  m_TagString: Text
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -924,6 +924,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 266dee177694435468095e35de5218cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  textObject: {fileID: 508942453}
   containerImage: {fileID: 851893613}
   receivingImage: {fileID: 345595092}
   highlightColor: {r: 1, g: 1, b: 0, a: 1}
@@ -939,7 +940,7 @@ GameObject:
   - component: {fileID: 355845429}
   - component: {fileID: 355845428}
   m_Layer: 5
-  m_Name: Your Point Text
+  m_Name: Your Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1019,7 +1020,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -1075,7 +1076,7 @@ GameObject:
   - component: {fileID: 369582492}
   m_Layer: 5
   m_Name: Text
-  m_TagString: Untagged
+  m_TagString: Text
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1468,7 +1469,7 @@ GameObject:
   - component: {fileID: 508942453}
   m_Layer: 5
   m_Name: Text
-  m_TagString: Untagged
+  m_TagString: Text
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1547,7 +1548,7 @@ GameObject:
   - component: {fileID: 513808546}
   - component: {fileID: 513808545}
   m_Layer: 5
-  m_Name: Your Selected Point Text (2)
+  m_Name: Your Selected Point Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1999,6 +2000,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 266dee177694435468095e35de5218cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  textObject: {fileID: 369582492}
   containerImage: {fileID: 313449398}
   receivingImage: {fileID: 648127359}
   highlightColor: {r: 1, g: 1, b: 0, a: 1}
@@ -2294,6 +2296,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6352430894680091374, guid: 95ff4c8cc88f84d52a36dbeaaf20404b, type: 3}
+      propertyPath: yourChosePointText
+      value: 
+      objectReference: {fileID: 1269760168}
+    - target: {fileID: 6352430894680091374, guid: 95ff4c8cc88f84d52a36dbeaaf20404b, type: 3}
+      propertyPath: totalSelectivePointText
+      value: 
+      objectReference: {fileID: 355845428}
     - target: {fileID: 6352430894680091375, guid: 95ff4c8cc88f84d52a36dbeaaf20404b, type: 3}
       propertyPath: m_Name
       value: Game Manager
@@ -2959,7 +2969,7 @@ GameObject:
   - component: {fileID: 1269760169}
   - component: {fileID: 1269760168}
   m_Layer: 5
-  m_Name: Your Chose Point Text
+  m_Name: Your Chose Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3039,7 +3049,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 4
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -3783,6 +3793,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 266dee177694435468095e35de5218cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  textObject: {fileID: 288746056}
   containerImage: {fileID: 657950953}
   receivingImage: {fileID: 1583289238}
   highlightColor: {r: 1, g: 1, b: 0, a: 1}
@@ -4249,7 +4260,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 147, y: -100}
+  m_AnchoredPosition: {x: 147, y: -88}
   m_SizeDelta: {x: 306.2, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1781343623
@@ -4886,7 +4897,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -27, y: -257}
+  m_AnchoredPosition: {x: -27, y: -242}
   m_SizeDelta: {x: 1000, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1973050817
@@ -4911,8 +4922,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Caution:
 
-    You can''t choose skills with the same name at different
-    levels simultaneously.'
+    You cannot choose skills with the same name, even if they
+    are at different levels. Please choose only one.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4939,8 +4950,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25
-  m_fontSizeBase: 25
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -5025,7 +5036,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -377, y: -100}
+  m_AnchoredPosition: {x: -377, y: -88}
   m_SizeDelta: {x: 306.2, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1998702093
@@ -5102,7 +5113,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -115, y: -100}
+  m_AnchoredPosition: {x: -115, y: -88}
   m_SizeDelta: {x: 306.2, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2013273957

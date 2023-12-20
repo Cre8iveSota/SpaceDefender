@@ -6,10 +6,28 @@ using UnityEngine.UI;
 
 public class DropMe : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
+    public Text textObject;
+
     public Image containerImage;
     public Image receivingImage;
     private Color normalColor;
     public Color highlightColor = Color.yellow;
+
+    // 他のフィールドやメソッドは省略...
+
+    private void Start()
+    {
+        if (textObject != null)
+        {
+            Debug.Log("textObject " + textObject.text);
+        }
+        else
+        {
+            Debug.LogError("Textオブジェクトが見つかりませんでした");
+        }
+
+
+    }
     public void OnEnable()
     {
         if (containerImage != null)
@@ -25,7 +43,7 @@ public class DropMe : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointe
 
         if (receivingImage != null)
             Debug.Log("OnDrop " + GetDropSprite(data));
-        GameManager.droppedExtraAbility.Add(GetDropSprite(data));
+        GameManager.droppedExtraAbility.Add((GetDropSprite(data), textObject.text));
 
 
         Sprite dropSprite = GetDropSprite(data);
