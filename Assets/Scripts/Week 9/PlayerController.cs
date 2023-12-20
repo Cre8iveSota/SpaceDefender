@@ -28,7 +28,6 @@ public class PlayerController : MonoBehaviour
     private Camera cam;
     private Vector3 rotationDirection;
 
-    public UnityEvent beforeGameOver;
     public UnityEvent gameOver;
     private Laser laser;
     // add
@@ -72,6 +71,7 @@ public class PlayerController : MonoBehaviour
         currentHealth = maxHealth;
         uIBarScript.UpdateValue(currentHealth, maxHealth);
         NaturalHealingAbilityManager();
+        GameManager.totalamount = 0;
     }
 
     public void SelfDestruct()
@@ -244,8 +244,6 @@ public class PlayerController : MonoBehaviour
         uIBarScript.UpdateValue(currentHealth, maxHealth);
         if (currentHealth <= 0)
         {
-            // beforeGameOver.Invoke();
-            // await Task.Delay(600); // Wait 600 msec unitl the update hp animation done. Otherwise, if player gets  big damage, the game over screen is showed before Hralth bar 0
             gameOver.Invoke();
         }
     }

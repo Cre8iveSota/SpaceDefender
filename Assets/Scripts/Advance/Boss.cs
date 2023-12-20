@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Boss : MonoBehaviour
 {
@@ -43,6 +44,7 @@ public class Boss : MonoBehaviour
     private bool isDone;
     private bool isGameEnd = false;
     EnemySpawner enemySpawner;
+    public UnityEvent gameClear;
 
     void Start()
     {
@@ -251,7 +253,9 @@ public class Boss : MonoBehaviour
                     enemyComponent.SelfDestruct();
                 }
             }
-            SelfDestruct();
+            gameManager.isGameClear = true;
+            gameClear.Invoke();
+            gameObject.SetActive(false);
         }
     }
 
