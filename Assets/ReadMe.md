@@ -1,3 +1,20 @@
+# ToDo
+
+- [x]change the image of astroide
+- to rotate and change the scale ranomly for astroide
+- [x]to explode when the astroide broke
+
+  - sound
+
+- change the normale button UI
+- player's animation
+- when the enemy destroy, it makes explode
+- take the music depends on player HP and enemy
+- take the music for skill choose
+- when the game cleared, it need a text for explain the point
+- when the scene change, the game display change the feed out
+- to save the point and time as a top record
+
 # I used the fowwling external assets
 
 - Dotween
