@@ -190,7 +190,7 @@ public class Boss : MonoBehaviour
     {
         if (col.gameObject.CompareTag("Player"))
         {
-            playerController.UpdateHealth(-damage);
+            if (!gameManager.isGameClear) playerController.UpdateHealth(-damage);
             UpdateHealth(-1);
 
             screenShake.isShaking = true;

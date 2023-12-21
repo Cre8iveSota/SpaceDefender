@@ -246,7 +246,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &483634723 stripped
 GameObject:
@@ -716,7 +716,7 @@ Transform:
   - {fileID: 99057228}
   - {fileID: 1322481687}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1451757886
 PrefabInstance:
@@ -6480,7 +6480,7 @@ Transform:
   m_Children:
   - {fileID: 1799249529}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2137189323
 MonoBehaviour:
@@ -7119,7 +7119,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6352430894680091373, guid: 95ff4c8cc88f84d52a36dbeaaf20404b, type: 3}
       propertyPath: m_RootOrder
-      value: 9
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6352430894680091373, guid: 95ff4c8cc88f84d52a36dbeaaf20404b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7204,7 +7204,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7824825846213174254, guid: 5528004d914064102b67b31afaab955e, type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7824825846213174254, guid: 5528004d914064102b67b31afaab955e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7461,7 +7461,7 @@ RectTransform:
   - {fileID: 1863240035}
   - {fileID: 2990327940612172469}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}

@@ -10,14 +10,22 @@ public class Bullet : MonoBehaviour
     private Vector3 direction;
     private float angle;
     [SerializeField] private float speed = 10f;
+    [SerializeField] private GameObject explodeAnimationPrefab;
     // Start is called before the first frame update
+    private bool isBulletStop;
+
     void Start()
     {
         Invoke("SelfDestruct", 3f);
     }
     public void SelfDestruct()
     {
-        Destroy(gameObject);
+        Vector3 lastPosition = transform.position;
+        if (explodeAnimationPrefab)
+        {
+            GameObject explodePreTemp = Instantiate(explodeAnimationPrefab, lastPosition, Quaternion.identity);
+            if (explodePreTemp) StartCoroutine(WaitForAnimation(0.1f, explodePreTemp));
+        }
     }
     public void SetDestination(Vector3 point)
     {
@@ -36,7 +44,7 @@ public class Bullet : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position += destination.normalized * speed * Time.deltaTime;
+        if (!isBulletStop) transform.position += destination.normalized * speed * Time.deltaTime;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -53,5 +61,13 @@ public class Bullet : MonoBehaviour
             SelfDestruct();
             Debug.Log("Came");
         }
+    }
+
+    private IEnumerator WaitForAnimation(float second, GameObject prefab)
+    {
+        isBulletStop = true;
+        yield return new WaitForSeconds(second);
+        Destroy(prefab);
+        Destroy(gameObject);
     }
 }

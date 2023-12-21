@@ -17,6 +17,8 @@ public class AstroLerp : MonoBehaviour
     [SerializeField][Range(0f, 1f)] private float percentageComplete;
     // Start is called before the first frame update
 
+    [SerializeField] private GameObject astroExplode;
+    private GameObject astroExplodePrefab;
     bool CanMove = true;
 
     void Start()
@@ -60,11 +62,17 @@ public class AstroLerp : MonoBehaviour
 
     public void SelfDisappear()
     {
+        Vector3 lastPostion = transform.position;
+        if (astroExplode) { astroExplodePrefab = Instantiate(astroExplode, lastPostion, Quaternion.identity); }
         Debug.Log("move");
         elapsedTime = 0f;
         percentageComplete = 0f;
         transform.position = startPos;
         CanMove = false;
+        if (astroExplodePrefab)
+        {
+            StartCoroutine(WaitForExplodeAnimation(astroExplodePrefab));
+        }
         StartCoroutine(WaitForReborn());
     }
 
@@ -72,6 +80,12 @@ public class AstroLerp : MonoBehaviour
     {
         yield return new WaitForSeconds(5f);
         CanMove = true;
+    }
+
+    private IEnumerator WaitForExplodeAnimation(GameObject astroPrefab)
+    {
+        yield return new WaitForSeconds(0.8f);
+        Destroy(astroPrefab);
     }
     private void OnTriggerEnter2D(Collider2D other)
     {

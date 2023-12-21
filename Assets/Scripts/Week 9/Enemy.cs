@@ -57,6 +57,10 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         TrackPlayer();
+        if (gameManager.isGameClear)
+        {
+            SelfDestruct();
+        }
     }
     private void TrackPlayer()
     {
@@ -93,7 +97,7 @@ public class Enemy : MonoBehaviour
     {
         if (col.gameObject.CompareTag("Player"))
         {
-            playerController.UpdateHealth(-damage);
+            if (!gameManager.isGameClear) playerController.UpdateHealth(-damage);
             screenShake.isShaking = true;
             SelfDestruct();
             SoundManager.instance.PlaySE(3);

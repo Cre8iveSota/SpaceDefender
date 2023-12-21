@@ -283,9 +283,6 @@ MonoBehaviour:
   maxHealth: 10
   currentHealth: 10
   currentPosition: {x: 0, y: 0, z: 0}
-  beforeGameOver:
-    m_PersistentCalls:
-      m_Calls: []
   gameOver:
     m_PersistentCalls:
       m_Calls:
@@ -414,3 +411,4 @@ MonoBehaviour:
   CanNaturalHealingAbility: 1
   extraEnemy: []
   hormingEnemyInterval: 10
+  isHealing: 1

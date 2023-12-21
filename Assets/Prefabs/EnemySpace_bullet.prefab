@@ -7,6 +7,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -4435615284377922972, guid: 8f48816caa8ab408c8441e6fd3de2b66, type: 3}
+      propertyPath: explodeAnimationPrefab
+      value: 
+      objectReference: {fileID: 4112594533709317399, guid: eb87d2180851e4240bb579ace47ac60f, type: 3}
     - target: {fileID: -94637811914295835, guid: 8f48816caa8ab408c8441e6fd3de2b66, type: 3}
       propertyPath: m_Enabled
       value: 1

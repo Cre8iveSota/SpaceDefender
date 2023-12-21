@@ -44,11 +44,15 @@ public class PlayerController : MonoBehaviour
     public int naturalHealingLevel = 0;
     ExtraAbility extraAbility;
 
+    GameObject gameManagerGameObj;
+    GameManager gameManager;
 
     #endregion
 
     void Start()
     {
+        gameManagerGameObj = GameObject.FindGameObjectWithTag("GameManager");
+        gameManager = gameManagerGameObj?.GetComponent<GameManager>();
         cam = Camera.main;
         uIBarScript = healthBarExtention.GetComponentInChildren<UIBarScript>();
         uIBarScript.UpdateValue(currentHealth / maxHealth);
@@ -258,7 +262,7 @@ public class PlayerController : MonoBehaviour
         if (col.transform.gameObject.CompareTag("EnemyBullet"))
         {
             col.gameObject.GetComponent<Bullet>().SelfDestruct();
-            UpdateHealth(-3);
+            if (!gameManager.isGameClear) UpdateHealth(-3);
         }
     }
     #region Normal Ability

@@ -130,6 +130,7 @@ public class GameManager : MonoBehaviour
             int sec = (int)(elapsedTime % 60);
             if (clearTimeText) { clearTimeText.text = $"Time: {min:00}:{sec:00}"; }
             if (clearScoreText) { clearScoreText.text = totalamount.ToString(); }
+            StartCoroutine(GameresetIntervel());
         }
     }
     private void ChooseItemsPointManagement()
