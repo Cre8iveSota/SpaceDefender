@@ -179,10 +179,10 @@ public class PlayerController : MonoBehaviour
                     StartCoroutine(extraAbility.ShootLaserBeamAsyncContinuously(0.1f, 10, 1f, true));
                     break;
                 case 2:
-                    StartCoroutine(extraAbility.ShootLaserBeamAsyncContinuously(0.08f, 20, 1f, false));
+                    StartCoroutine(extraAbility.ShootLaserBeamAsyncContinuously(0.05f, 50, 0.3f, false));
                     break;
                 default:
-                    StartCoroutine(extraAbility.ShootLaserBeamAsyncContinuously(0.5f, 10, 1f, false));
+                    StartCoroutine(extraAbility.ShootLaserBeamAsyncContinuously(0.3f, 10, 0.5f, false));
                     break;
             }
         }
@@ -242,6 +242,10 @@ public class PlayerController : MonoBehaviour
         currentHealth += amount;
         Debug.Log("Player health: " + currentHealth);
         uIBarScript.UpdateValue(currentHealth, maxHealth);
+        if (currentHealth > maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
         if (currentHealth <= 0)
         {
             gameOver.Invoke();

@@ -13,6 +13,8 @@ public class DropMe : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointe
     private Color normalColor;
     public Color highlightColor = Color.yellow;
 
+    private string myPositionName;
+
     // 他のフィールドやメソッドは省略...
 
     private void Start()
@@ -20,12 +22,12 @@ public class DropMe : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointe
         if (textObject != null)
         {
             Debug.Log("textObject " + textObject.text);
+            myPositionName = textObject.text;
         }
         else
         {
             Debug.LogError("Textオブジェクトが見つかりませんでした");
         }
-
 
     }
     public void OnEnable()
@@ -43,7 +45,7 @@ public class DropMe : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointe
 
         if (receivingImage != null)
             Debug.Log("OnDrop " + GetDropSprite(data));
-        GameManager.droppedExtraAbility.Add((GetDropSprite(data), textObject.text));
+        GameManager.droppedExtraAbility.Add((GetDropSprite(data), myPositionName));
 
 
         Sprite dropSprite = GetDropSprite(data);

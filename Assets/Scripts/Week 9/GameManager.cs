@@ -8,6 +8,7 @@ using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -22,6 +23,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMP_Text yourChosePointText;
     [SerializeField] private TMP_Text cautionText;
     [SerializeField] private GameObject cautionBelowPointText;
+    [SerializeField] private GameObject dropArea1Text;
+    [SerializeField] private GameObject dropArea2Text;
+    [SerializeField] private GameObject dropArea3Text;
+    [SerializeField] private TMP_Text dropArea1Explaination;
+    [SerializeField] private TMP_Text dropArea2Explaination;
+    [SerializeField] private TMP_Text dropArea3Explaination;
+
 
 
     private int sceneIndex;
@@ -32,12 +40,14 @@ public class GameManager : MonoBehaviour
     public static int totalamount = 0;
 
     public static List<(Sprite, string)> droppedExtraAbility = new List<(Sprite, string)>();
-    public static List<(Sprite, string)> pastDroppedExtraAbility = new List<(Sprite, string)>();
+    private List<(Sprite, string)> pastDroppedExtraAbility = new List<(Sprite, string)>();
     public static List<(string, bool, int)> acquiresAbility = new List<(string, bool, int)>();
     private int level1 = 1;
     private int level2 = 2;
     private int level3 = 3;
-    private int yourChosePointNumber = 0;
+    private DropMe[] dropMe = new DropMe[3];
+
+    private int yourChosePointNumber;
 
     private bool isExecuting = false;
 
@@ -47,11 +57,22 @@ public class GameManager : MonoBehaviour
     private float elapsedTime;
     public bool isGameClear;
     Dictionary<string, int> choseSkillCategory = new Dictionary<string, int>();
+    Dictionary<string, string> choseSkillExplainationText = new Dictionary<string, string>();
 
 
     // Start is called before the first frame update
     void Start()
     {
+        if (dropArea1Text && dropArea2Text && dropArea3Text)
+        {
+            dropMe[0] = dropArea1Text.GetComponent<DropMe>();
+            dropMe[1] = dropArea2Text.GetComponent<DropMe>();
+            dropMe[2] = dropArea3Text.GetComponent<DropMe>();
+        }
+
+        yourChosePointNumber = 0;
+        droppedExtraAbility.Clear();
+
         choseSkillCategory["PhysicalEnhancement"] = 0;
         choseSkillCategory["NaturalHealing"] = 0;
         choseSkillCategory["Bullet"] = 0;
@@ -113,11 +134,8 @@ public class GameManager : MonoBehaviour
     }
     private void ChooseItemsPointManagement()
     {
+        Debug.Log("your working");
         isExecuting = true;
-
-        Debug.Log("Test start");
-        Debug.Log("2 droppedExtraAbility.Count" + droppedExtraAbility.Count);
-        Debug.Log("2 pastDroppedExtraAbility.Count " + pastDroppedExtraAbility.Count);
 
         choseSkillCategory["PhysicalEnhancement"] = 0;
         choseSkillCategory["NaturalHealing"] = 0;
@@ -125,14 +143,14 @@ public class GameManager : MonoBehaviour
         choseSkillCategory["Laser"] = 0;
         acquiresAbility.Clear();
 
+        Debug.Log("you droppedExtraAbility " + droppedExtraAbility[0].Item1);
+        Debug.Log("you2  droppedExtraAbility " + droppedExtraAbility[0].Item2);
+
         LatestExtraAbilityFilleter(droppedExtraAbility);
 
-        Debug.Log("2 2 droppedExtraAbility.Count" + droppedExtraAbility.Count);
-
-        Debug.Log("Kitenaiyo");
 
         yourChosePointNumber = 0;
-        droppedExtraAbility.ForEach(i => Debug.Log("chuumoku " + i.Item1.texture.name));
+
         droppedExtraAbility.ForEach(i => UpdatePoints(i.Item1.texture.name, true));
         isExecuting = false;
         pastDroppedExtraAbility = new List<(Sprite, string)>(droppedExtraAbility);
@@ -193,58 +211,75 @@ public class GameManager : MonoBehaviour
         switch (textureName)
         {
 
-            case "Icon1":
+            case "AircraftEnhanceLv1 1":
                 point = isAdd ? 1500 : -1500;
                 acquiresAbility.Add(("PhysicalEnhancement", true, level1));
                 choseSkillCategory["PhysicalEnhancement"] = choseSkillCategory["PhysicalEnhancement"] + 1;
+                Debug.Log("explain: HP*2 Speed*2");
                 break;
-            case "Icon2":
+            case "AircraftEnhanceLv2":
                 point = isAdd ? 3000 : -3000;
                 acquiresAbility.Add(("PhysicalEnhancement", true, level2));
                 choseSkillCategory["PhysicalEnhancement"] = choseSkillCategory["PhysicalEnhancement"] + 1;
+                Debug.Log("explain: HP*3 Speed*3");
                 break;
-            case "Icon3":
+            case "AircraftEnhanceLv3":
                 point = isAdd ? 6000 : -6000;
                 acquiresAbility.Add(("PhysicalEnhancement", true, level3));
                 choseSkillCategory["PhysicalEnhancement"] = choseSkillCategory["PhysicalEnhancement"] + 1;
+                Debug.Log("explain: HP*4 Speed*4");
                 break;
-            case "Self-RepairLv1":
+            case "SelfRepairLv1":
                 point = isAdd ? 1000 : -1000;
                 acquiresAbility.Add(("NaturalHealingAbility", true, level2));
                 choseSkillCategory["NaturalHealing"] = choseSkillCategory["NaturalHealing"] + 1;
+                Debug.Log("explain: 2 / 6s");
                 break;
-            case "Self-RepairLv2":
+            case "SelfRepairLv2":
                 point = isAdd ? 2500 : -2500;
                 acquiresAbility.Add(("NaturalHealingAbility", true, level3));
                 choseSkillCategory["NaturalHealing"] = choseSkillCategory["NaturalHealing"] + 1;
+                Debug.Log("explain: 3 / 5.1...s");
                 break;
-            case "BulletLv2":
-                point = isAdd ? 4000 : -4000;
+            case "BulletLv1":
+                point = isAdd ? 5000 : -5000;
                 acquiresAbility.Add(("ShootBulletContinuously", true, level1));
                 choseSkillCategory["Bullet"] = choseSkillCategory["Bullet"] + 1;
+                Debug.Log("explain: 10 times / 0.1s");
+                //Fires 10 times\nat 0.1-second intervals
                 break;
-            case "BulletLv3":
-                point = isAdd ? 7000 : -7000;
+            case "BulletLv2":
+                point = isAdd ? 10000 : -10000;
                 acquiresAbility.Add(("ShootBulletContinuously", true, level2));
                 choseSkillCategory["Bullet"] = choseSkillCategory["Bullet"] + 1;
+                Debug.Log("explain: 30 times / 0.05s");
+                //Fires 30 times\nat 0.05-second intervals
                 break;
-            case "LaserLv2":
+            case "LaserLv1":
                 point = isAdd ? 3000 : -3000;
                 acquiresAbility.Add(("ShootLaserBeamAsyncContinuously", true, level1));
                 choseSkillCategory["Laser"] = choseSkillCategory["Laser"] + 1;
+                Debug.Log("explain: 10 times / 0.3s");
+                //Fires 10 times\nat 0.3-second intervals
                 break;
-            case "LaserLv3":
-                point = isAdd ? 8000 : -8000;
+            case "LaserLv.2":
+                point = isAdd ? 15000 : -15000;
                 acquiresAbility.Add(("ShootLaserBeamAsyncContinuously", true, level2));
                 choseSkillCategory["Laser"] = choseSkillCategory["Laser"] + 1;
+                Debug.Log("explain: 50 times / 0.05s");
+                //Fires 50 times\nat 0.05-second intervals
                 break;
         }
 
         // ここで直接代入しないように修正
         yourChosePointNumber += point;
 
+        Debug.Log("yourChosePointNumber " + yourChosePointNumber);
         updateOnly++;
-        Debug.Log("YourChosePointNumber after addition: " + yourChosePointNumber);
+
+        SetTextBasedOnDropArea(0, "Drop Area 1");
+        SetTextBasedOnDropArea(1, "Drop Area 2");
+        SetTextBasedOnDropArea(2, "Drop Area 3");
     }
 
 
@@ -299,7 +334,7 @@ public class GameManager : MonoBehaviour
             {
                 sceneIndex = 0;
                 SceneManager.LoadScene(1);
-
+                yourChosePointNumber = 0;
             }
             else if (choseSkillCategory["PhysicalEnhancement"] > 1
              || choseSkillCategory["NaturalHealing"] > 1
@@ -347,6 +382,7 @@ public class GameManager : MonoBehaviour
     }
     public void LoadSceneRestart()
     {
+        acquiresAbility.Clear();
         sceneIndex = 0;
         SceneManager.LoadScene(0);
     }
@@ -366,5 +402,42 @@ public class GameManager : MonoBehaviour
         {
             Console.WriteLine("条件に合致する要素が見つかりませんでした。");
         }
+    }
+
+
+    private void SetTextBasedOnDropArea(int dropAreaIndex, string dropAreaName)
+    {
+        choseSkillExplainationText["AircraftEnhanceLv1 1"] = "Normal Defence × 2\nNormal Speed × 2";
+        choseSkillExplainationText["AircraftEnhanceLv2"] = "Normal Defence × 3\nNormal Speed × 3";
+        choseSkillExplainationText["AircraftEnhanceLv3"] = "Normal Defence × 4\nNormal Speed × 4";
+        choseSkillExplainationText["SelfRepairLv1"] = "Heals a bit\napproximately 6 seconds";
+        choseSkillExplainationText["SelfRepairLv2"] = "Heals significantly\napproximately every 5 seconds";
+        choseSkillExplainationText["BulletLv1"] = "Fires 10 times\nat 0.1-second intervals";
+        choseSkillExplainationText["BulletLv2"] = "Fires 30 times\nat 0.05-second intervals";
+        choseSkillExplainationText["LaserLv1"] = "Fires 10 times\nat 0.3-second intervals";
+        choseSkillExplainationText["LaserLv.2"] = "Fires 50 times\nat 0.05-second intervals";
+
+        int seekingIndex = droppedExtraAbility.FindIndex((i) => i.Item2.Contains(dropAreaName));
+
+        if (seekingIndex != -1)
+        {
+            string targetDropItems = droppedExtraAbility[seekingIndex].Item1.texture.name;
+            string afterJudge = GetAfterJudgeValue(targetDropItems);
+            Debug.Log("afterJudge " + afterJudge);
+            dropMe[dropAreaIndex].textObject.text = afterJudge;
+
+            if (dropAreaName == "Drop Area 1") dropArea1Explaination.text = choseSkillExplainationText.FirstOrDefault(i => i.Key == droppedExtraAbility[seekingIndex].Item1.texture.name).Value;
+            if (dropAreaName == "Drop Area 2") dropArea2Explaination.text = choseSkillExplainationText.FirstOrDefault(i => i.Key == droppedExtraAbility[seekingIndex].Item1.texture.name).Value;
+            if (dropAreaName == "Drop Area 3") dropArea3Explaination.text = choseSkillExplainationText.FirstOrDefault(i => i.Key == droppedExtraAbility[seekingIndex].Item1.texture.name).Value;
+        }
+    }
+
+    private string GetAfterJudgeValue(string targetDropItems)
+    {
+        return targetDropItems.Contains("Aircra") ? "AirframeEnhancement" :
+               targetDropItems.Contains("Self") ? "Self-Repair" :
+               targetDropItems.Contains("Bullet") ? "Bullet" :
+               targetDropItems.Contains("Laser") ? "Laser" :
+               "not found";
     }
 }
