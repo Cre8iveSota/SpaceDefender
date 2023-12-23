@@ -43,7 +43,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 99870432dd519488aaee536bdd433dd4, type: 3}
+  m_audioClip: {fileID: 8300000, guid: b7086479be7de4e2b8dd4661ccf6cd9a, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -53,8 +53,8 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
+  MinDistance: 0
+  MaxDistance: 0.01
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -104,7 +104,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 0.20833333
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -145,9 +145,11 @@ MonoBehaviour:
   audioClipsSE:
   - {fileID: 8300000, guid: 494dfd6dc5cae492cbd873c67505f124, type: 3}
   - {fileID: 8300000, guid: aa2c34c9e7cb84842b73242c72ba0bee, type: 3}
-  - {fileID: 8300000, guid: 295fc7387f4d84e3881eb5f810990765, type: 3}
+  - {fileID: 8300000, guid: 6d1459e0ab28c4fe59465237f468b565, type: 3}
   - {fileID: 8300000, guid: 58a0e9d09dd034e78ae129f588c15a86, type: 3}
+  - {fileID: 8300000, guid: 1056f120bbc864d1c96330b5dfee45ac, type: 3}
   audioSourceBGM: {fileID: 7824825846213174255}
   audioClipsBGM:
   - {fileID: 8300000, guid: b7086479be7de4e2b8dd4661ccf6cd9a, type: 3}
   - {fileID: 8300000, guid: 99870432dd519488aaee536bdd433dd4, type: 3}
+  - {fileID: 8300000, guid: 45df877850d9743b7809c3c2a0acf943, type: 3}

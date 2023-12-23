@@ -24,12 +24,6 @@ public class ExtraAbility : MonoBehaviour
     {
         playerController = GetComponent<PlayerController>();
         boss = GetComponent<Boss>();
-        // if (CanNaturalHealingAbility && playerController)
-        // {
-
-        //     Debug.Log("kitemasu interval" + healingInterval);
-        //     InvokeRepeating("NaturalHealingAbility", 0f, healingInterval);
-        // }
     }
 
     public IEnumerator ShootBulletContinuously(float period, int bulletCount, float interval, bool canGatring)
@@ -97,12 +91,8 @@ public class ExtraAbility : MonoBehaviour
         if (playerController)
         {
             int healAmount = playerController.naturalHealingLevel;
-            Debug.Log("kaihukusuruyo" + healAmount);
-            Debug.Log("playerController.currentHealth" + playerController.currentHealth);
-            Debug.Log("playerController.maxHealth" + playerController.currentHealth);
 
-
-            if (playerController.currentHealth >= playerController.maxHealth) { Debug.Log("shippai"); yield return null; }
+            if (playerController.currentHealth >= playerController.maxHealth) { yield return null; }
             playerController.UpdateHealth(healAmount);
         }
         yield return new WaitForSeconds(healingInterval);
@@ -122,7 +112,6 @@ public class ExtraAbility : MonoBehaviour
         foreach (GameObject enemyPrefab in extraEnemy)
         {
             Instantiate(enemyPrefab, boss.originPoint[0].position, Quaternion.identity);
-            Debug.Log("敵が生成されました: " + enemyPrefab.name);
             yield return new WaitForSeconds(hormingEnemyInterval);
         }
     }

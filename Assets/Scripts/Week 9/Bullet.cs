@@ -13,18 +13,25 @@ public class Bullet : MonoBehaviour
     [SerializeField] private GameObject explodeAnimationPrefab;
     // Start is called before the first frame update
     private bool isBulletStop;
+    DoneOneShootBulletExplosion doneOneShootBulletExplosion;
+    private bool isHit = false;
 
     void Start()
     {
         Invoke("SelfDestruct", 3f);
+        if (explodeAnimationPrefab) doneOneShootBulletExplosion = explodeAnimationPrefab.GetComponent<DoneOneShootBulletExplosion>();
     }
     public void SelfDestruct()
     {
+        if (!gameObject.CompareTag("Player") && isHit)
+        {
+            SoundManager.instance.PlaySE(4);
+        }
         Vector3 lastPosition = transform.position;
         if (explodeAnimationPrefab)
         {
             GameObject explodePreTemp = Instantiate(explodeAnimationPrefab, lastPosition, Quaternion.identity);
-            if (explodePreTemp) StartCoroutine(WaitForAnimation(0.1f, explodePreTemp));
+            if (explodePreTemp) StartCoroutine(WaitForAnimation(0.15f, explodePreTemp));
         }
     }
     public void SetDestination(Vector3 point)
@@ -49,17 +56,14 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-
-        Debug.Log("Comming " + other.gameObject);
-
         if
         (
             (other.gameObject.CompareTag("PlayerBullet") && this.gameObject.CompareTag("EnemyBullet"))
                     || (other.gameObject.CompareTag("EnemyBullet") && this.gameObject.CompareTag("PlayerBullet"))
         )
         {
+            isHit = true;
             SelfDestruct();
-            Debug.Log("Came");
         }
     }
 
@@ -67,6 +71,7 @@ public class Bullet : MonoBehaviour
     {
         isBulletStop = true;
         yield return new WaitForSeconds(second);
+        doneOneShootBulletExplosion.isFinish = true;
         Destroy(prefab);
         Destroy(gameObject);
     }

@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMP_Text dropArea1Explaination;
     [SerializeField] private TMP_Text dropArea2Explaination;
     [SerializeField] private TMP_Text dropArea3Explaination;
+    [SerializeField] private GameObject bossParticle;
 
 
 
@@ -52,9 +53,8 @@ public class GameManager : MonoBehaviour
     private bool isExecuting = false;
 
 
-    int updateOnly = 0;
-    int perrfom = 0;
     private float elapsedTime;
+    public static float clearElapsedTime;
     public bool isGameClear;
     Dictionary<string, int> choseSkillCategory = new Dictionary<string, int>();
     Dictionary<string, string> choseSkillExplainationText = new Dictionary<string, string>();
@@ -95,19 +95,25 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Player not found!");
+            Debug.Log("Player not found!");
+        }
+        if (sceneIndex == 3)
+        {
+            Instantiate(bossParticle, Boss.finalBossPosition, Quaternion.identity);
+            int min = (int)(clearElapsedTime / 60);
+            int sec = (int)(clearElapsedTime % 60);
+            if (clearTimeText) { clearTimeText.text = $"Time: {min:00}:{sec:00}"; }
+            if (clearScoreText) { clearScoreText.text = $"{totalamount.ToString()} pt"; }
+            SoundManager.instance.PlaySE(2);
+            Debug.Log("Cleared point: " + totalamount);
+            Debug.Log("Cleared time: " + totalamount);
         }
     }
 
     void Update()
     {
-        Debug.Log("perform: " + perrfom);
-        Debug.Log("updateOnly: " + updateOnly);
-        Debug.Log("1 droppedExtraAbility.Count" + droppedExtraAbility.Count);
-        Debug.Log("1 pastDroppedExtraAbility.Count " + pastDroppedExtraAbility.Count);
         if (totalSelectivePointText) totalSelectivePointText.text = $"{totalamount}";
         if (yourChosePointText) yourChosePointText.text = $"{yourChosePointNumber}";
-        Debug.Log("yourChosePointNumber " + yourChosePointNumber);
 
         // isExcuting フラグが解除されていない場合のみ Test メソッドを実行
 
@@ -125,17 +131,15 @@ public class GameManager : MonoBehaviour
         }
         if (isGameClear)
         {
-            elapsedTime += Time.deltaTime;
-            int min = (int)(elapsedTime / 60);
-            int sec = (int)(elapsedTime % 60);
-            if (clearTimeText) { clearTimeText.text = $"Time: {min:00}:{sec:00}"; }
-            if (clearScoreText) { clearScoreText.text = totalamount.ToString(); }
+            clearElapsedTime = elapsedTime;
+            SoundManager.instance.StopAllSE();
+            SoundManager.instance.PlayClearBGM();
+            isGameClear = false;
             StartCoroutine(GameresetIntervel());
         }
     }
     private void ChooseItemsPointManagement()
     {
-        Debug.Log("your working");
         isExecuting = true;
 
         choseSkillCategory["PhysicalEnhancement"] = 0;
@@ -143,9 +147,6 @@ public class GameManager : MonoBehaviour
         choseSkillCategory["Bullet"] = 0;
         choseSkillCategory["Laser"] = 0;
         acquiresAbility.Clear();
-
-        Debug.Log("you droppedExtraAbility " + droppedExtraAbility[0].Item1);
-        Debug.Log("you2  droppedExtraAbility " + droppedExtraAbility[0].Item2);
 
         LatestExtraAbilityFilleter(droppedExtraAbility);
 
@@ -186,18 +187,14 @@ public class GameManager : MonoBehaviour
         // item2の同じ項目のみfillterをかける
         string filterCondition1 = "Drop Area 1";
         tmp1 = list.Where(item => item.Item2 == filterCondition1).ToList();
-        if (tmp1.Count > 0) Debug.Log("2 :tmp1 :" + tmp1[0].Item1.texture.name);
         if (tmp1.Count > 0) tmpComp.Add(tmp1[tmp1.Count - 1]);
 
         string filterCondition2 = "Drop Area 2";
         tmp2 = list.Where(item => item.Item2 == filterCondition2).ToList();
-        if (tmp2.Count > 0) Debug.Log("2 :tmp3 :" + tmp2[0].Item1.texture.name);
-
         if (tmp2.Count > 0) tmpComp.Add(tmp2[tmp2.Count - 1]);
 
         string filterCondition3 = "Drop Area 3";
         tmp3 = list.Where(item => item.Item2 == filterCondition3).ToList();
-        if (tmp3.Count > 0) Debug.Log("2 :tmp3 :" + tmp3[0].Item1.texture.name);
         if (tmp3.Count > 0) tmpComp.Add(tmp3[tmp3.Count - 1]);
 
         list.Clear();
@@ -216,67 +213,55 @@ public class GameManager : MonoBehaviour
                 point = isAdd ? 1500 : -1500;
                 acquiresAbility.Add(("PhysicalEnhancement", true, level1));
                 choseSkillCategory["PhysicalEnhancement"] = choseSkillCategory["PhysicalEnhancement"] + 1;
-                Debug.Log("explain: HP*2 Speed*2");
                 break;
             case "AircraftEnhanceLv2":
                 point = isAdd ? 3000 : -3000;
                 acquiresAbility.Add(("PhysicalEnhancement", true, level2));
                 choseSkillCategory["PhysicalEnhancement"] = choseSkillCategory["PhysicalEnhancement"] + 1;
-                Debug.Log("explain: HP*3 Speed*3");
                 break;
             case "AircraftEnhanceLv3":
                 point = isAdd ? 6000 : -6000;
                 acquiresAbility.Add(("PhysicalEnhancement", true, level3));
                 choseSkillCategory["PhysicalEnhancement"] = choseSkillCategory["PhysicalEnhancement"] + 1;
-                Debug.Log("explain: HP*4 Speed*4");
                 break;
             case "SelfRepairLv1":
                 point = isAdd ? 1000 : -1000;
                 acquiresAbility.Add(("NaturalHealingAbility", true, level2));
                 choseSkillCategory["NaturalHealing"] = choseSkillCategory["NaturalHealing"] + 1;
-                Debug.Log("explain: 2 / 6s");
                 break;
             case "SelfRepairLv2":
                 point = isAdd ? 2500 : -2500;
                 acquiresAbility.Add(("NaturalHealingAbility", true, level3));
                 choseSkillCategory["NaturalHealing"] = choseSkillCategory["NaturalHealing"] + 1;
-                Debug.Log("explain: 3 / 5.1...s");
                 break;
             case "BulletLv1":
                 point = isAdd ? 5000 : -5000;
                 acquiresAbility.Add(("ShootBulletContinuously", true, level1));
                 choseSkillCategory["Bullet"] = choseSkillCategory["Bullet"] + 1;
-                Debug.Log("explain: 10 times / 0.1s");
                 //Fires 10 times\nat 0.1-second intervals
                 break;
             case "BulletLv2":
                 point = isAdd ? 10000 : -10000;
                 acquiresAbility.Add(("ShootBulletContinuously", true, level2));
                 choseSkillCategory["Bullet"] = choseSkillCategory["Bullet"] + 1;
-                Debug.Log("explain: 30 times / 0.05s");
                 //Fires 30 times\nat 0.05-second intervals
                 break;
             case "LaserLv1":
                 point = isAdd ? 3000 : -3000;
                 acquiresAbility.Add(("ShootLaserBeamAsyncContinuously", true, level1));
                 choseSkillCategory["Laser"] = choseSkillCategory["Laser"] + 1;
-                Debug.Log("explain: 10 times / 0.3s");
                 //Fires 10 times\nat 0.3-second intervals
                 break;
             case "LaserLv.2":
                 point = isAdd ? 15000 : -15000;
                 acquiresAbility.Add(("ShootLaserBeamAsyncContinuously", true, level2));
                 choseSkillCategory["Laser"] = choseSkillCategory["Laser"] + 1;
-                Debug.Log("explain: 50 times / 0.05s");
                 //Fires 50 times\nat 0.05-second intervals
                 break;
         }
 
         // ここで直接代入しないように修正
         yourChosePointNumber += point;
-
-        Debug.Log("yourChosePointNumber " + yourChosePointNumber);
-        updateOnly++;
 
         SetTextBasedOnDropArea(0, "Drop Area 1");
         SetTextBasedOnDropArea(1, "Drop Area 2");
@@ -318,11 +303,19 @@ public class GameManager : MonoBehaviour
     }
     public void LoadScene()
     {
-        Debug.Log("SceneManager.sceneCount; " + SceneManager.sceneCount);
-        if (sceneIndex < 2)
+        Debug.Log("LoadScene called");
+
+        if (sceneIndex == 1 && !isGameClear)
         {
-            sceneIndex++;
+            sceneIndex = 2;
             SceneManager.LoadScene(sceneIndex);
+            SoundManager.instance.PlayBGM(1);
+        }
+        else if (sceneIndex == 0)
+        {
+            isGameClear = false;
+            sceneIndex++;
+            FadeIOManager.instane.FadeOutToIn(() => SceneManager.LoadScene(sceneIndex));
             SoundManager.instance.PlayBGM(1);
         }
         else if (sceneIndex == 2)
@@ -334,7 +327,7 @@ public class GameManager : MonoBehaviour
              && choseSkillCategory["Laser"] <= 1)
             {
                 sceneIndex = 0;
-                SceneManager.LoadScene(1);
+                FadeIOManager.instane.FadeOutToIn(() => SceneManager.LoadScene(1));
                 yourChosePointNumber = 0;
             }
             else if (choseSkillCategory["PhysicalEnhancement"] > 1
@@ -349,10 +342,21 @@ public class GameManager : MonoBehaviour
                 StartCoroutine(CautionBelowPoints());
             }
         }
+        else if (sceneIndex == 1 && isGameClear)
+        {
+            SoundManager.instance.PlaySE(2);
+            FadeIOManager.instane.FadeOutToIn(() => SceneManager.LoadScene(3));
+        }
+        else if (sceneIndex == 3)
+        {
+            sceneIndex = 2;
+            FadeIOManager.instane.FadeOutToIn(() => SceneManager.LoadScene(sceneIndex));
+            SoundManager.instance.PlayClearBGM();
+        }
         else
         {
             sceneIndex = 0;
-            SceneManager.LoadScene(sceneIndex);
+            FadeIOManager.instane.FadeOutToIn(() => SceneManager.LoadScene(sceneIndex));
             SoundManager.instance.PlayBGM(0);
         }
     }
@@ -379,7 +383,7 @@ public class GameManager : MonoBehaviour
     {
         droppedExtraAbility.Clear();
         sceneIndex = 2;
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene(sceneIndex);
     }
     public void LoadSceneRestart()
     {
@@ -397,11 +401,6 @@ public class GameManager : MonoBehaviour
         if (indexToUpdate != -1)
         {
             acqwireAbility[indexToUpdate] = (abilityNameToUpdate, newBoolValue, newLevelValue);
-            Console.WriteLine("要素が更新されました。");
-        }
-        else
-        {
-            Console.WriteLine("条件に合致する要素が見つかりませんでした。");
         }
     }
 
@@ -424,7 +423,6 @@ public class GameManager : MonoBehaviour
         {
             string targetDropItems = droppedExtraAbility[seekingIndex].Item1.texture.name;
             string afterJudge = GetAfterJudgeValue(targetDropItems);
-            Debug.Log("afterJudge " + afterJudge);
             dropMe[dropAreaIndex].textObject.text = afterJudge;
 
             if (dropAreaName == "Drop Area 1") dropArea1Explaination.text = choseSkillExplainationText.FirstOrDefault(i => i.Key == droppedExtraAbility[seekingIndex].Item1.texture.name).Value;

@@ -57,20 +57,23 @@ public class AstroLerp : MonoBehaviour
                 percentageComplete = 0f;
             }
         }
-
+        if (elapsedTime == 0 && percentageComplete == 0)
+        {
+            transform.localScale = new Vector3(0.25f, 0.25f, 0.25f) * UnityEngine.Random.Range(0.5f, 2f);
+        }
     }
 
     public void SelfDisappear()
     {
         Vector3 lastPostion = transform.position;
         if (astroExplode) { astroExplodePrefab = Instantiate(astroExplode, lastPostion, Quaternion.identity); }
-        Debug.Log("move");
         elapsedTime = 0f;
         percentageComplete = 0f;
         transform.position = startPos;
         CanMove = false;
         if (astroExplodePrefab)
         {
+            SoundManager.instance.PlaySE(2);
             StartCoroutine(WaitForExplodeAnimation(astroExplodePrefab));
         }
         StartCoroutine(WaitForReborn());
@@ -91,7 +94,6 @@ public class AstroLerp : MonoBehaviour
     {
         if (other.transform.gameObject.CompareTag("PlayerBullet") || other.transform.gameObject.CompareTag("EnemyBullet"))
         {
-            Debug.Log(other.transform.gameObject);
             other.transform.gameObject.GetComponent<Bullet>()?.SelfDestruct();
             SelfDisappear();
         }

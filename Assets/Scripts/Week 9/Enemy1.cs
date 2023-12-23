@@ -91,11 +91,9 @@ public class Enemy1 : MonoBehaviour
         else if (col.gameObject.CompareTag("PlayerBullet"))
         {
             {
-                Debug.Log("PlayerBullet collision detected!");
                 if (col.gameObject.GetComponent<Bullet>() != null)
                 {
                     col.gameObject.GetComponent<Bullet>().SelfDestruct();
-                    Debug.Log("Bullet destroyed!");
                 }
                 else
                 {

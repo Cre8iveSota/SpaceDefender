@@ -9,8 +9,12 @@ public class EnemySpawner : MonoBehaviour
     public bool waveActive = true;
     private int waveRepeatCount = 0;
     [SerializeField] private GameObject boss;
+    [SerializeField] private GameObject smallBoss;
+
     // [SerializeField] private GameObject bossSpawnPoint;
     bool isBossExist = false;
+    bool isSmallBossExist = false;
+
     [SerializeField] private GameObject bossHealthUI;
 
     // Start is called before the first frame update
@@ -25,10 +29,8 @@ public class EnemySpawner : MonoBehaviour
     {
         for (int i = startingWave; i < listOfConfig.Count; i++)
         {
-            Debug.Log("boss comming? " + GameManager.totalamount);
             if (GameManager.totalamount > 10000 && !isBossExist)
             {
-                Debug.Log("boss comming? " + GameManager.totalamount);
                 isBossExist = true;
                 waveActive = false;
                 boss.SetActive(true);
@@ -37,6 +39,16 @@ public class EnemySpawner : MonoBehaviour
                 yield return new WaitForSeconds(5f);
                 waveActive = true;
                 waveRepeatCount = 2;
+            }
+            if (GameManager.totalamount > 5000 && !isSmallBossExist)
+            {
+                isSmallBossExist = true;
+                waveActive = false;
+                smallBoss.SetActive(true);
+                // Instantiate(bossPrefab, bossSpawnPoint.transform.position, Quaternion.identity);
+                yield return new WaitForSeconds(10f);
+                waveActive = true;
+                waveRepeatCount = 5;
             }
             SpawnWaveConfig currentWave = listOfConfig[i];
             yield return StartCoroutine(SpawnEnemiesInWave(currentWave));

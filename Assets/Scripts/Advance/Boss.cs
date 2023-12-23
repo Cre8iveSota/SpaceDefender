@@ -20,6 +20,7 @@ public class Boss : MonoBehaviour
     [SerializeField] private GameObject healthBarExtention;
     private List<(string, bool, int)> acquiresAbility = new List<(string, bool, int)>();
     private int launchedHormingNumber = 0;
+    public static Vector3 finalBossPosition = Vector3.zero;
 
 
     Bullet bullet;
@@ -45,6 +46,7 @@ public class Boss : MonoBehaviour
     private bool isGameEnd = false;
     EnemySpawner enemySpawner;
     public UnityEvent gameClear;
+    [SerializeField] private GameObject deathParticle;
 
     void Start()
     {
@@ -53,8 +55,6 @@ public class Boss : MonoBehaviour
         acquiresAbility.Add(("ShootBulletContinuously", true, level1));
         extraAbility.CanNaturalHealingAbility = false;
         acquiresAbility.Add(("HormingEnemy", true, level1));
-        // acquiresAbility.Add(("PhysicalEnhancement", false, level3));
-        // acquiresAbility.Add(("NaturalHealingAbility", true, level3));
         player = GameObject.FindGameObjectWithTag("Player");
         if (player)
         {
@@ -152,8 +152,6 @@ public class Boss : MonoBehaviour
             Vector3 targetPosition = farthestCorner;
             if (!ApproximatelyEqual(transform.position, targetPosition))
             {
-                Debug.Log("targetPosition:" + targetPosition);
-                Debug.Log("transform.position:" + transform.position);
                 Vector2 offset = new Vector2(4f, 4f);
                 if (transform.position != targetPosition)
                 {
@@ -162,12 +160,10 @@ public class Boss : MonoBehaviour
                     if (currentHealth < 0.6 * maxHealth)
                     {
                         transform.position += new Vector3(targetPosition.x - (transform.position.x + offset.x), targetPosition.y - (transform.position.y + offset.y), 0f) * step;
-                        Debug.Log("spped up");
                     }
                     else
                     {
                         transform.position += new Vector3(targetPosition.x - (transform.position.x + offset.x), targetPosition.y - (transform.position.y + offset.y), 0f).normalized * step;
-                        Debug.Log("spped normal");
                     }
 
                 }
@@ -176,8 +172,6 @@ public class Boss : MonoBehaviour
         else
         {
             this.enabled = false;
-            Debug.Log($"Playerrrrrr");
-
         }
     }
     bool ApproximatelyEqual(Vector3 a, Vector3 b, float tolerance = 0.001f)
@@ -200,12 +194,10 @@ public class Boss : MonoBehaviour
         else if (col.gameObject.CompareTag("PlayerBullet"))
         {
             {
-                Debug.Log("PlayerBullet collision detected!");
                 if (col.gameObject.GetComponent<Bullet>() != null)
                 {
                     col.gameObject.GetComponent<Bullet>().SelfDestruct();
                     UpdateHealth(-1);
-                    Debug.Log("Bullet destroyed!");
                 }
                 else
                 {
@@ -218,8 +210,8 @@ public class Boss : MonoBehaviour
 
     public void SelfDestruct()
     {
-        Destroy(gameObject);
         gameManager.UpadateScore(enemyScore);
+        Destroy(gameObject);
     }
     public void ShootBullet()
     {
@@ -237,7 +229,6 @@ public class Boss : MonoBehaviour
     public void UpdateHealth(int amount)
     {
         currentHealth += amount;
-        Debug.Log("Player health: " + currentHealth);
         uIBarScript.UpdateValue(currentHealth, maxHealth);
         if (currentHealth <= 0 && !isGameEnd)
         {
@@ -253,12 +244,28 @@ public class Boss : MonoBehaviour
                     enemyComponent.SelfDestruct();
                 }
             }
+            if (deathParticle)
+            {
+                float duration = deathParticle.GetComponent<ParticleSystem>().main.duration;
+                Instantiate(deathParticle, transform.position, Quaternion.identity);
+                StartCoroutine(WaitForParticle(duration));
+            }
+            else
+            {
+                Debug.Log("Player death particle missing");
+            }
+            SoundManager.instance.PlaySE(2);
             gameManager.isGameClear = true;
             gameClear.Invoke();
+            finalBossPosition = transform.position;
             gameObject.SetActive(false);
+            gameManager.LoadScene();
         }
     }
-
+    IEnumerator WaitForParticle(float _duration)
+    {
+        yield return new WaitForSeconds(_duration);
+    }
     private void ShootBulletManager()
     {
         if (0.6f * maxHealth < currentHealth && currentHealth < 0.8f * maxHealth)
@@ -266,20 +273,17 @@ public class Boss : MonoBehaviour
             int indexToReplace = 0;  // Index of the first item
             // Replace the third argument of the first item with level2
             acquiresAbility[indexToReplace] = (acquiresAbility[indexToReplace].Item1, acquiresAbility[indexToReplace].Item2, level2);
-            Debug.Log("replaced to level2 of shoot: " + acquiresAbility[0]);
         }
         else if (0.4f * maxHealth < currentHealth && currentHealth < 0.6f * maxHealth)
         {
             int indexToReplace = 0;  // Index of the first item
             // Replace the third argument of the first item with level2
             acquiresAbility[indexToReplace] = (acquiresAbility[indexToReplace].Item1, acquiresAbility[indexToReplace].Item2, level3);
-            Debug.Log("replaced to level3 of shoot:" + acquiresAbility[0]);
         }
         else if (0.2f * maxHealth < currentHealth && currentHealth < 0.4 * maxHealth)
         {
             StartCoroutine(extraAbility.SubShootBulletContinuously());
             enabledHorming = true;
-            Debug.Log("first horming");
             isDone = true;
         }
         else if (currentHealth < 0.2f * maxHealth && isDone)
@@ -287,13 +291,15 @@ public class Boss : MonoBehaviour
             StartCoroutine(extraAbility.SubShootBulletContinuously());
             enabledHorming = true;
             if (launchedHormingNumber < 2) { hasLaunchedHorming = false; }
-            Debug.Log("second horming");
             extraAbility.hormingEnemyInterval = 0f;
+        }
+        else if (currentHealth < 0.01f * maxHealth && isDone)
+        {
+            SoundManager.instance.StopAllSE();
         }
         // bool enable = acquiresAbility.Find((i) => i.Item1 == "ShootBulletContinuously").Item2;
         // if (enable)
         // {
-        Debug.Log($"Switch Value: {acquiresAbility.Find((i) => i.Item1 == "ShootBulletContinuously").Item3}");
 
         switch (acquiresAbility.Find((i) => i.Item1 == "ShootBulletContinuously").Item3)
         {

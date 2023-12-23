@@ -46,11 +46,13 @@ public class PlayerController : MonoBehaviour
 
     GameObject gameManagerGameObj;
     GameManager gameManager;
+    private Animator animatorController;
 
     #endregion
 
     void Start()
     {
+        animatorController = GetComponent<Animator>();
         gameManagerGameObj = GameObject.FindGameObjectWithTag("GameManager");
         gameManager = gameManagerGameObj?.GetComponent<GameManager>();
         cam = Camera.main;
@@ -107,6 +109,7 @@ public class PlayerController : MonoBehaviour
         direction.x = Input.GetAxisRaw("Horizontal");
         direction.y = Input.GetAxisRaw("Vertical");
         direction = Vector3.ClampMagnitude(direction, 1f);
+        if (direction != Vector3.zero) { animatorController.SetBool("isMoving", true); } else { animatorController.SetBool("isMoving", false); }
         transform.position += direction * moveSpeed * Time.deltaTime;
         Vector3 currentPosition = transform.position;
         if (currentPosition.x > ScreenWidth)

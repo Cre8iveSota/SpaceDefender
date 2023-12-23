@@ -22,7 +22,8 @@ public class Enemy : MonoBehaviour
     Bullet bullet;
     GameObject gameManagerGameObj;
     GameManager gameManager;
-
+    [SerializeField] private GameObject deathParticle;
+    [SerializeField] private bool reverseDirection = false;
     private Vector3 directionBullet;
     void Start()
     {
@@ -33,7 +34,7 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Player not found!");
+            Debug.Log("Player not found!");
         }
         cam = Camera.main;
         if (cam)
@@ -83,7 +84,7 @@ public class Enemy : MonoBehaviour
             {
                 transform.position += (-direction * speed * Time.deltaTime);
             }
-            if (originPoint)
+            if (originPoint && reverseDirection)
             {
                 transform.up = -direction;
             }
@@ -105,11 +106,9 @@ public class Enemy : MonoBehaviour
         else if (col.gameObject.CompareTag("PlayerBullet"))
         {
             {
-                Debug.Log("PlayerBullet collision detected!");
                 if (col.gameObject.GetComponent<Bullet>() != null)
                 {
                     col.gameObject.GetComponent<Bullet>().SelfDestruct();
-                    Debug.Log("Bullet destroyed!");
                 }
                 else
                 {
@@ -122,8 +121,23 @@ public class Enemy : MonoBehaviour
 
     public void SelfDestruct()
     {
-        Destroy(gameObject);
         gameManager.UpadateScore(enemyScore);
+        if (deathParticle)
+        {
+            float duration = deathParticle.GetComponent<ParticleSystem>().main.duration;
+            Instantiate(deathParticle, transform.position, Quaternion.identity);
+            StartCoroutine(WaitForParticle(duration));
+        }
+        else
+        {
+            Debug.Log("Player death particle missing");
+        }
+        SoundManager.instance.PlaySE(2);
+        Destroy(gameObject);
+    }
+    IEnumerator WaitForParticle(float _duration)
+    {
+        yield return new WaitForSeconds(_duration);
     }
     private void ShootBullet()
     {

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEditor.Experimental.GraphView;
 
 public class SoundManager : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class SoundManager : MonoBehaviour
     public AudioSource audioSourceBGM; // BGM source
     public AudioClip[] audioClipsBGM; // item of BGM(0:Menu 1:Game)
     public static SoundManager instance;
+    private readonly int totalPlayingTweens = DOTween.TotalPlayingTweens();
+    int seCount = 0;
     private void Awake()
     {
         if (instance == null)
@@ -20,6 +23,11 @@ public class SoundManager : MonoBehaviour
             instance = this;
             //Ensure that sound is not interrupted when transitioning between scenes
             DontDestroyOnLoad(this.gameObject);
+            // DOTweenの初期化
+            DOTween.Init();
+
+            // トゥイーンの容量を手動で設定
+            DOTween.SetTweensCapacity(2000, 100);
         }
         else
         {
@@ -63,7 +71,65 @@ public class SoundManager : MonoBehaviour
 
     public void PlaySE(int index)
     {
-        audioSourceSE.PlayOneShot(audioClipsSE[index]); // SEを一度だけ鳴らす
+        seCount++;
+
+        Debug.Log("totalPlayingTweens se " + totalPlayingTweens);
+        Debug.Log("totalPlayingTweens seCount " + seCount);
+        if (totalPlayingTweens > 1)
+        {
+            int killNum = DOTween.KillAll(true);
+            StopAllSE();
+            Debug.Log("totalPlayingTweenskillNum " + killNum);
+        }
+        else if (seCount < 10)
+        {
+            // audioSourceSE.PlayOneShot(audioClipsSE[index]); // SEを一度だけ鳴らす
+            audioSourceSE.DOFade(1f, 0f).OnComplete(() =>
+            {
+                audioSourceSE.PlayOneShot(audioClipsSE[index]);
+                seCount--;
+            }
+            );
+        }
+        else
+        {
+            int killNum = DOTween.KillAll(true);
+            StopAllSE();
+            Debug.Log("totalPlayingTweenskillNum " + killNum);
+        }
+    }
+
+
+
+    public void StopAllSE()
+    {
+        Debug.Log("totalPlayingTweens se stop" + totalPlayingTweens);
+
+        if (audioSourceSE.isPlaying)
+        {
+            DOTween.KillAll(true);
+            audioSourceSE.Stop();
+            seCount = 0;
+        }
+    }
+
+    public void PlayClearBGM()
+    {
+        Debug.Log("totalPlayingTweens clear" + totalPlayingTweens);
+
+        audioSourceBGM.Stop();
+        StopAllSE();
+        float fadeOutDuration = 1f;
+        audioSourceBGM.DOFade(0f, fadeOutDuration).OnComplete(() =>
+        {
+            // BGM 停止
+
+            audioSourceBGM.clip = audioClipsBGM[2];
+            float fadeInDuration = 1f;
+            audioSourceBGM.volume = 0f;
+            audioSourceBGM.Play();
+            audioSourceBGM.DOFade(1f, fadeInDuration);
+        });
     }
 
 }

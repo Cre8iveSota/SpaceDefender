@@ -9,9 +9,12 @@ EditorBuildSettings:
     path: Assets/Scenes/Main Menu Scene.unity
     guid: 48efe457425d24e40b24c85dcc3d627f
   - enabled: 1
-    path: Assets/Scenes/Game Scene.unity
-    guid: 5a5111b9b867f0f4e96881e6ccc046ef
+    path: Assets/Scenes/Game Scene 1.unity
+    guid: e5f14d5986fed442d8e6f1c8aa2b6ea2
   - enabled: 1
     path: Assets/Scenes/Drag And Drop 1.unity
     guid: 009f01851c7c346e8a873fea6323f089
+  - enabled: 1
+    path: Assets/Scenes/Game Clear Scene.unity
+    guid: 5a5111b9b867f0f4e96881e6ccc046ef
   m_configObjects: {}
