@@ -77,14 +77,14 @@ public class ExtraAbility : MonoBehaviour
         }
     }
 
-    public void PhysicalEnhancement(int multiplier)
-    {
-        if (playerController)
-        {
-            playerController.maxHealth *= multiplier;
-            playerController.moveSpeed *= multiplier;
-        }
-    }
+    // public void PhysicalEnhancement(int multiplier)
+    // {
+    //     if (playerController)
+    //     {
+    //         playerController.maxHealth *= multiplier;
+    //         playerController.moveSpeed *= multiplier;
+    //     }
+    // }
 
     public IEnumerator NaturalHealingAbility()
     {

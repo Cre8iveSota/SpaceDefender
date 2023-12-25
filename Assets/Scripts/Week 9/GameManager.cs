@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -58,6 +59,7 @@ public class GameManager : MonoBehaviour
     public bool isGameClear;
     Dictionary<string, int> choseSkillCategory = new Dictionary<string, int>();
     Dictionary<string, string> choseSkillExplainationText = new Dictionary<string, string>();
+
 
 
     // Start is called before the first frame update

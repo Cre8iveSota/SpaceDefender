@@ -48,7 +48,7 @@ public class Enemy : MonoBehaviour
 
         if (enemyBullet)
         {
-            InvokeRepeating("ShootBullet", 0f, shootingBulletRate);
+            InvokeRepeating("ShootBullet", 1f, shootingBulletRate);
         }
 
         gameManagerGameObj = GameObject.FindGameObjectWithTag("GameManager");

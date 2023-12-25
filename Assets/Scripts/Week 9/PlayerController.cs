@@ -9,7 +9,7 @@ using UnityEngine.Events;
 public class PlayerController : MonoBehaviour
 {
     #region member variable
-    [SerializeField] public float moveSpeed = 5f;
+    public float moveSpeed = 5f;
     [SerializeField] private Transform originPoint;
     [SerializeField] private GameObject bullet;
     [SerializeField] private GameObject deathParticles;
@@ -48,8 +48,14 @@ public class PlayerController : MonoBehaviour
     GameManager gameManager;
     private Animator animatorController;
 
-    #endregion
+    bool physicalEnhanceActive;
 
+    #endregion
+    void OnEnable()
+    {
+        PhysicalEnhancementManager();
+        currentHealth = maxHealth;
+    }
     void Start()
     {
         animatorController = GetComponent<Animator>();
@@ -73,8 +79,10 @@ public class PlayerController : MonoBehaviour
         ScreenWidth = screenHeight * Camera.main.aspect;
 
         extraAbility = GetComponent<ExtraAbility>();
-        PhysicalEnhancementManager();
-        currentHealth = maxHealth;
+        if (GameManager.acquiresAbility.Find((i) => i.Item1 == "PhysicalEnhancement").Item2 == true && !physicalEnhanceActive)
+        {
+            PhysicalEnhancementManager();
+        }
         uIBarScript.UpdateValue(currentHealth, maxHealth);
         NaturalHealingAbilityManager();
         GameManager.totalamount = 0;
@@ -206,19 +214,29 @@ public class PlayerController : MonoBehaviour
             switch (GameManager.acquiresAbility.Find((i) => i.Item1 == "PhysicalEnhancement").Item3)
             {
                 case 3:
-                    extraAbility?.PhysicalEnhancement(4);
+                    // extraAbility?.PhysicalEnhancement(4);
+                    moveSpeed *= 4;
+                    maxHealth *= 4;
                     break;
                 case 2:
-                    extraAbility?.PhysicalEnhancement(3);
+                    moveSpeed *= 3;
+                    maxHealth *= 3;
+
+                    // extraAbility?.PhysicalEnhancement(3);
                     break;
                 default:
-                    extraAbility?.PhysicalEnhancement(2);
+                    moveSpeed *= 2;
+                    maxHealth *= 2;
+                    // extraAbility?.PhysicalEnhancement(2);
                     break;
             }
+            physicalEnhanceActive = true;
+            Debug.Log("enable physical " + GameManager.acquiresAbility.Find((i) => i.Item1 == "PhysicalEnhancement").Item3);
         }
         else
         {
-            extraAbility?.PhysicalEnhancement(1);
+            Debug.Log("Not enable of physical");
+            // extraAbility?.PhysicalEnhancement(1);
         }
 
     }

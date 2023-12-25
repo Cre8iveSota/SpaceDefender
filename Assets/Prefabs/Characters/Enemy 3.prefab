@@ -279,8 +279,9 @@ MonoBehaviour:
   enemyScore: 30
   shootingBulletRate: 3
   howFarFromPlayer: 0.2
-  originPoint: {fileID: 0}
+  originPoint: {fileID: 380720583860528214}
   deathParticle: {fileID: 5306067411068675583, guid: 6acfcbbfab47d432f933a4ce1b64411a, type: 3}
+  reverseDirection: 0
 --- !u!61 &6631538252213614280
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -294,7 +295,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.02376628, y: 0.35807008}
+  m_Offset: {x: 0.02376628, y: 0.1514974}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -305,7 +306,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.7664449, y: 1.9664575}
+  m_Size: {x: 1.7664449, y: 1.4030774}
   m_EdgeRadius: 0
 --- !u!50 &516661188154659116
 Rigidbody2D:

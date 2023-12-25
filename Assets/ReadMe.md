@@ -1,17 +1,15 @@
-# ToDo
+# Bugs
 
-- [x]change the image of astroide
-- [x]to rotate and change the scale ranomly for astroide
-- [x]to explode when the astroide broke
+Fade Screen does not work in Game Scene so it is not used for now
 
-  - [x]sound
+## Only Web GL
 
-- change the normale button UI
-- [x]player's animation
-  - [x] Player's trail
-- [x]when the enemy destroy, it makes explode
-- [x]when the game cleared, it need a text for explain the point
-- when the scene change, the game display change the feed out
+- Once you chose reward skilss, and then you dead in the following games, after that if you do not choose any reward skills, you can use the same skills which you chose the first time
+- If you chose the Lv2 Laser as reward skills, sometimes when you faced boss and you use that skill, the game stop.
+- Opning Video cannot play: Instead of that It is played Sprite like Gif
+- If you played this game in 2. and if you expand as full screen, the Health UI position does not fit
+  - 1. https://sharemygame.com/@SodapopHiguchi/stellar-nexus-revival
+  - 2. https://simmer.io/@SodapopHiguchi/stellar-nexus-revival
 
 # I used the fowwling external assets
 

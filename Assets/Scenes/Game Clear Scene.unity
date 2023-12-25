@@ -6838,6 +6838,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 9a32a6cc2cb803443983d45d4a513506, type: 3}
     - target: {fileID: 8132807645512524207, guid: 470cb48fd4d044da088714aae80200e0, type: 3}
+      propertyPath: m_text
+      value: Revival
+      objectReference: {fileID: 0}
+    - target: {fileID: 8132807645512524207, guid: 470cb48fd4d044da088714aae80200e0, type: 3}
       propertyPath: m_fontColor.b
       value: 1
       objectReference: {fileID: 0}
